@@ -1,61 +1,70 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cristalik | Developer Portfolio</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <div id="particles-js"></div>
-
-  <div class="blur blur-1"></div>
-  <div class="blur blur-2"></div>
-
-  <header>
-    <div class="logo">Cristalik</div>
-
-    <nav>
-      <a href="#about">Обо мне</a>
-      <a href="#skills">Навыки</a>
-      <a href="#projects">Проекты</a>
-      <a href="#contacts">Контакты</a>
-    </nav>
-  </header>
-
-  <main>
-
-    <section class="hero">
-      <div class="hero-content">
-
-        <div class="status">
-          ● Online & Coding
+            Набор Python-инструментов для автоматизации
+            рутинных задач.
+          </p>
         </div>
 
-        <h1>
-          Cristalik
-        </h1>
-
-        <div class="typing-container">
-          <span id="typing"></span>
-          <span class="cursor">|</span>
+        <div class="project glass">
+          <span class="tag">WEB</span>
+          <h3>Modern UI Concepts</h3>
+          <p>
+            Эксперименты с интерфейсами,
+            анимациями и web-дизайном.
+          </p>
         </div>
 
-        <p>
-          Создаю современные сайты, backend-системы,
-          автоматизацию и атмосферные интерфейсы.
-        </p>
+      </div>
+    </section>
 
-        <div class="hero-buttons">
-          <a href="https://github.com/Cr1staloriginal" target="_blank" class="btn primary">GitHub</a>
-          <a href="https://t.me/cr1staloriginal" target="_blank" class="btn secondary">Telegram</a>
-          <a href="#contacts" class="btn secondary">Контакты</a>
+
+    <section class="section glass github-section">
+      <h2>GitHub</h2>
+
+      <img
+        src="https://github-readme-stats.vercel.app/api?username=Cr1staloriginal&show_icons=true&theme=tokyonight&hide_border=true&bg_color=00000000"
+        alt="github stats"
+      />
+
+      <img
+        src="https://github-readme-stats.vercel.app/api/top-langs/?username=Cr1staloriginal&layout=compact&theme=tokyonight&hide_border=true&bg_color=00000000"
+        alt="top langs"
+      />
+    </section>
+
+
+    <section id="contacts" class="section glass">
+      <h2>Контакты</h2>
+
+      <div class="contacts">
+
+        <a href="https://github.com/Cr1staloriginal" target="_blank" class="contact-card">
+          <h3>GitHub</h3>
+          <p>@Cr1staloriginal</p>
+        </a>
+
+        <a href="https://t.me/cr1staloriginal" target="_blank" class="contact-card">
+          <h3>Telegram</h3>
+          <p>@cr1staloriginal</p>
+        </a>
+
+        <div class="contact-card">
+          <h3>Discord</h3>
+          <p>@cr1staoriginal</p>
         </div>
 
+      </div>
+    </section>
+
+  </main>
+
+
+  <footer>
+    <p>© 2026 Cristalik — Developer Portfolio</p>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="script.js"></script>
+
+</body>
 </html>
