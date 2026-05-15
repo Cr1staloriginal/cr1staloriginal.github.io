@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenreScope — точное определение жанра и поджанра</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b13;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --text: #f9fafb;
+      --muted: #94a3b8;
+      --accent: #7c3aed;
+      --accent-2: #06b6d4;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at 15% 20%, #1d4ed8 0%, transparent 45%),
+      radial-gradient(circle at 90% 15%, #0f766e 0%, transparent 42%),
+      var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 28px 16px 48px;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero,
+    .panel {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(170deg, rgba(17, 24, 39, 0.95), rgba(17, 24, 39, 0.75));
+      backdrop-filter: blur(8px);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 14px 45px rgba(0, 0, 0, 0.33);
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+      margin-bottom: 10px;
+    }
+
+    .lead {
+      color: var(--muted);
+      line-height: 1.45;
+      max-width: 80ch;
+    }
+
+    .chips {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      border-radius: 999px;
+      font-size: 0.83rem;
+      padding: 5px 11px;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: rgba(15, 23, 42, 0.78);
+      border-radius: 12px;
+      padding: 6px;
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 8px;
+      color: #e2e8f0;
+      background: transparent;
+      cursor: pointer;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+
+    .view {
+      display: none;
+      gap: 14px;
+    }
+
+    .view.active {
+      display: grid;
+    }
+
+    .file-drop {
+      border: 2px dashed rgba(148, 163, 184, 0.4);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.42);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .btn,
+    input[type="file"]::file-selector-button {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      font-weight: 600;
+      padding: 10px 16px;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    input[type="search"] {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      color: white;
+      outline: none;
+    }
+
+    .search-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .search-item {
+      border: 1px solid rgba(148, 163, 184, 0.27);
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .search-item:hover {
+      border-color: rgba(34, 211, 238, 0.6);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .result {
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(52, 211, 153, 0.34);
+      background: rgba(6, 95, 70, 0.22);
+      display: none;
+      gap: 8px;
+    }
+
+    .result.visible {
+      display: grid;
+    }
+
+    .genre-main {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      align-items: center;
+    }
+
+    .badge {
+      background: rgba(124, 58, 237, 0.27);
+      border: 1px solid rgba(167, 139, 250, 0.42);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.82rem;
+      color: #ddd6fe;
+    }
+
+    .confidence {
+      font-weight: 700;
+      color: var(--ok);
+    }
+
+    .status {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .warn {
+      color: var(--warn);
+    }
+
+    footer {
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <h1>GenreScope: определение жанра и поджанра трека</h1>
+    <p class="lead">
+      Загрузите аудиофайл или найдите трек в каталоге — приложение анализирует темп, спектральную яркость,
+      энергетику и ритм, после чего определяет наиболее вероятный жанр и поджанр.
+    </p>
+    <div class="chips">
+      <span class="chip">Основной жанр + поджанр</span>
+      <span class="chip">Top-3 гипотезы</span>
+      <span class="chip">Оценка уверенности</span>
+      <span class="chip">MVP готов для интеграции с ML API</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="tabs">
+      <button class="tab active" data-tab="upload">Загрузка трека</button>
+      <button class="tab" data-tab="search">Поиск трека</button>
+    </div>
+
+    <div id="upload" class="view active">
+      <div class="file-drop">
+        <p>Поддерживается: MP3 / WAV / OGG / FLAC</p>
+        <br>
+        <input id="audio-file" type="file" accept="audio/*">
+      </div>
+      <button class="btn" id="analyze-file" disabled>Анализировать файл</button>
+      <p class="status" id="upload-status">Выберите файл, чтобы начать анализ.</p>
+    </div>
+
+    <div id="search" class="view">
+      <input id="search-input" type="search" placeholder="Например: Tale of Us - Another Earth">
+      <div id="search-results" class="search-list"></div>
+    </div>
+
+    <article id="result" class="result" aria-live="polite">
+      <div class="genre-main" id="genre-main">—</div>
+      <div class="row">
+        <span class="badge" id="subgenre">Поджанр: —</span>
+        <span class="confidence" id="confidence">Уверенность: —</span>
+      </div>
+      <div class="row" id="alternatives"></div>
+      <p class="meta" id="explain">—</p>
+    </article>
+
+    <footer>
+      Это демо-MVP на клиенте. Для production-точности замените эвристику на ML-модель
+      (например, CLAP/YAMNet + иерархическая классификация поджанров).
+    </footer>
+  </section>
+</div>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const views = Array.from(document.querySelectorAll('.view'));
+  const resultBlock = document.getElementById('result');
+
+  const fileInput = document.getElementById('audio-file');
+  const analyzeFileBtn = document.getElementById('analyze-file');
+  const uploadStatus = document.getElementById('upload-status');
+
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+
+  const genreMainEl = document.getElementById('genre-main');
+  const subgenreEl = document.getElementById('subgenre');
+  const confidenceEl = document.getElementById('confidence');
+  const alternativesEl = document.getElementById('alternatives');
+  const explainEl = document.getElementById('explain');
+
+  const catalog = [
+    { artist: 'Tale of Us', title: 'Another Earth', bpm: 124, energy: 0.62, brightness: 0.58 },
+    { artist: 'Burial', title: 'Archangel', bpm: 138, energy: 0.44, brightness: 0.31 },
+    { artist: 'Skrillex', title: 'Bangarang', bpm: 110, energy: 0.91, brightness: 0.83 },
+    { artist: 'Nujabes', title: 'Feather', bpm: 90, energy: 0.33, brightness: 0.42 },
+    { artist: 'Daft Punk', title: 'Get Lucky', bpm: 116, energy: 0.74, brightness: 0.69 },
+    { artist: 'M83', title: 'Midnight City', bpm: 105, energy: 0.67, brightness: 0.8 }
+  ];
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      views.forEach(v => v.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  fileInput.addEventListener('change', () => {
+    analyzeFileBtn.disabled = !fileInput.files.length;
+    uploadStatus.textContent = fileInput.files.length
+      ? `Файл выбран: ${fileInput.files[0].name}`
+      : 'Выберите файл, чтобы начать анализ.';
+  });
+
+  analyzeFileBtn.addEventListener('click', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    uploadStatus.textContent = 'Анализируем аудиосигнал...';
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+      const stats = extractAudioStats(audioBuffer);
+      const result = classifyGenre(stats);
+      showResult(result, `Источник: загруженный файл «${file.name}».`);
+      uploadStatus.textContent = 'Анализ завершен.';
+      await audioCtx.close();
+    } catch (error) {
+      uploadStatus.innerHTML = '<span class="warn">Не удалось распознать файл. Попробуйте другой формат.</span>';
+      console.error(error);
+    }
+  });
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    searchResults.innerHTML = '';
+    if (!q) return;
+
+    const matches = catalog
+      .filter(item => `${item.artist} ${item.title}`.toLowerCase().includes(q))
+      .slice(0, 5);
+
+    if (!matches.length) {
+      searchResults.innerHTML = '<p class="meta">Ничего не найдено. Попробуйте другой запрос.</p>';
+      return;
+    }
+
+    matches.forEach(item => {
+      const el = document.createElement('button');
+      el.className = 'search-item';
+      el.innerHTML = `<strong>${item.artist} — ${item.title}</strong><br><span class="meta">Каталог / демо-данные</span>`;
+      el.addEventListener('click', () => {
+        const result = classifyGenre(item);
+        showResult(result, `Источник: каталог — ${item.artist} / ${item.title}.`);
+      });
+      searchResults.appendChild(el);
+    });
+  });
+
+  function extractAudioStats(audioBuffer) {
+    const data = audioBuffer.getChannelData(0);
+    const sampleRate = audioBuffer.sampleRate;
+    const duration = audioBuffer.duration;
+
+    const frameSize = 1024;
+    let energySum = 0;
+    let zeroCross = 0;
+
+    for (let i = 1; i < data.length; i++) {
+      const sample = data[i];
+      energySum += sample * sample;
+      if ((data[i - 1] >= 0 && sample < 0) || (data[i - 1] < 0 && sample >= 0)) {
+        zeroCross++;
+      }
+    }
+
+    const rms = Math.sqrt(energySum / data.length);
+    const brightness = Math.min(1, zeroCross / data.length * 9.5);
+
+    const onsetStrength = [];
+    for (let i = frameSize; i < data.length; i += frameSize) {
+      let local = 0;
+      for (let j = 0; j < frameSize; j++) {
+        local += Math.abs(data[i + j] || 0);
+      }
+      onsetStrength.push(local / frameSize);
+    }
+
+    let peaks = 0;
+    for (let i = 1; i < onsetStrength.length - 1; i++) {
+      if (onsetStrength[i] > onsetStrength[i - 1] * 1.12 && onsetStrength[i] > onsetStrength[i + 1] * 1.12) {
+        peaks++;
+      }
+    }
+
+    const approxBpm = Math.max(65, Math.min(180, Math.round((peaks / Math.max(duration, 1)) * 60 * 0.8 + 75)));
+    const energy = Math.min(1, rms * 4.1);
+
+    return {
+      bpm: approxBpm,
+      energy,
+      brightness,
+      sampleRate
+    };
+  }
+
+  function classifyGenre(features) {
+    const { bpm, energy, brightness } = features;
+
+    let genre = 'Electronic';
+    let subgenre = 'Indie Electronic';
+    let score = 0.72;
+
+    if (bpm >= 120 && bpm <= 130 && energy >= 0.5 && brightness >= 0.45) {
+      genre = 'Electronic';
+      subgenre = 'Melodic Techno';
+      score = 0.9;
+    } else if (bpm >= 130 && energy >= 0.8) {
+      genre = 'Bass';
+      subgenre = 'Dubstep';
+      score = 0.93;
+    } else if (bpm >= 134 && energy < 0.55 && brightness < 0.45) {
+      genre = 'UK Electronic';
+      subgenre = 'Future Garage';
+      score = 0.86;
+    } else if (bpm <= 98 && energy < 0.45) {
+      genre = 'Hip-Hop';
+      subgenre = 'Lo-Fi Hip-Hop';
+      score = 0.88;
+    } else if (bpm >= 108 && bpm <= 122 && energy >= 0.63) {
+      genre = 'Dance / Pop';
+      subgenre = 'Nu-Disco';
+      score = 0.84;
+    } else if (bpm >= 100 && bpm <= 112 && brightness > 0.72) {
+      genre = 'Synthpop';
+      subgenre = 'Indietronica';
+      score = 0.82;
+    }
+
+    const alternatives = [
+      { label: `${genre} / ${subgenre}`, conf: score },
+      { label: fallbackAlternative(genre), conf: Math.max(0.45, score - 0.12) },
+      { label: 'Alternative Electronic', conf: Math.max(0.38, score - 0.21) }
+    ];
+
+    return {
+      genre,
+      subgenre,
+      confidence: Math.round(score * 100),
+      alternatives,
+      explanation: `Признаки: BPM=${bpm}, энергия=${energy.toFixed(2)}, яркость=${brightness.toFixed(2)}.`
+    };
+  }
+
+  function fallbackAlternative(genre) {
+    if (genre === 'Electronic') return 'Progressive House';
+    if (genre === 'Bass') return 'Trap';
+    if (genre === 'Hip-Hop') return 'Boom Bap';
+    if (genre === 'Synthpop') return 'Electropop';
+    return 'House';
+  }
+
+  function showResult(result, sourceText) {
+    genreMainEl.textContent = `Жанр: ${result.genre}`;
+    subgenreEl.textContent = `Поджанр: ${result.subgenre}`;
+    confidenceEl.textContent = `Уверенность: ${result.confidence}%`;
+    alternativesEl.innerHTML = '';
+
+    result.alternatives.forEach((item, index) => {
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = `#${index + 1} ${item.label} (${Math.round(item.conf * 100)}%)`;
+      alternativesEl.appendChild(badge);
+    });
+
+    explainEl.textContent = `${sourceText} ${result.explanation}`;
+    resultBlock.classList.add('visible');
+    resultBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>
