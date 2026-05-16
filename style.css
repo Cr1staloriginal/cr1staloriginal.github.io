@@ -315,4 +315,9 @@ nav{
     transform:translateY(0);
 }
 
+.contact-card glass p{ 
+    color:#a1a1aa; 
+    line-height:1.8; 
+}
+
 }
