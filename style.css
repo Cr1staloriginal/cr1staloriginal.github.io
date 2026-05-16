@@ -230,6 +230,24 @@ nav a:hover{
     padding:25px;
 }
 
+.skill-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+}
+
+.skill-top h3{
+    font-size:1rem;
+    font-weight:600;
+}
+
+.skill-top span{
+    font-size:.95rem;
+    font-family:'JetBrains Mono', monospace;
+    color:#a78bfa;
+}
+
 .bar{
     height:10px;
     border-radius:999px;
