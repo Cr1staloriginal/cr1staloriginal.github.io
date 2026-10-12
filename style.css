@@ -229,3 +229,8 @@ footer{align-items:center;border-top:1px solid rgba(175,190,255,.07);padding-top
 .detail-cta{display:flex;align-items:center;justify-content:space-between;gap:22px}.detail-cta h2{margin-bottom:10px}.detail-cta .section-text{max-width:590px}
 @media(max-width:800px){.detail-hero-grid{grid-template-columns:1fr;gap:28px}.detail-art{min-height:275px}.detail-cta{align-items:flex-start;flex-direction:column}}
 @media(max-width:600px){.detail-hero{padding-top:30px}.back-link{margin-bottom:25px}.detail-hero h1{font-size:clamp(3.7rem,17vw,5rem)}.detail-lead{font-size:.92rem}.detail-art{min-height:250px}.tech-detail-grid{grid-template-columns:1fr}.tree-panel pre{padding:17px 14px;font-size:.64rem}.tree-note{padding-inline:14px}.detail-links>a{padding:14px;gap:11px}.detail-cta{padding:24px 21px}}
+
+/* Featured project card layout correction */
+.project-featured{display:block}
+.project-featured>small,.project-featured>h3,.project-featured>p,.project-featured>.tags,.project-featured>a{grid-column:auto}
+@media(max-width:700px){.project-featured{display:block}}
