@@ -91,3 +91,7 @@ const observer = new IntersectionObserver((entries) => {
 reveals.forEach((element) => {
     observer.observe(element);
 });
+
+
+// Mobile navigation
+const menuToggle=document.getElementById('menu-toggle');const siteNav=document.getElementById('site-nav');if(menuToggle&&siteNav){menuToggle.addEventListener('click',()=>{const open=siteNav.classList.toggle('open');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Закрыть меню':'Открыть меню')});siteNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{siteNav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false')}))}
