@@ -1,0 +1,94 @@
+name: Sync Discord avatar
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discord-avatar-sync
+  cancel-in-progress: false
+
+jobs:
+  sync-avatar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch current Discord avatar
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_USER_ID: "1097906739552206938"
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          token = os.environ.get("DISCORD_BOT_TOKEN", "").strip()
+          user_id = os.environ["DISCORD_USER_ID"]
+
+          if not token:
+              print("::error::Add the DISCORD_BOT_TOKEN repository secret before running this workflow.")
+              sys.exit(1)
+
+          request = urllib.request.Request(
+              f"https://discord.com/api/v10/users/{user_id}",
+              headers={
+                  "Authorization": f"Bot {token}",
+                  "User-Agent": "Cr1stalikPortfolioAvatarSync/1.0",
+                  "Accept": "application/json",
+              },
+          )
+
+          try:
+              with urllib.request.urlopen(request, timeout=20) as response:
+                  user = json.load(response)
+          except urllib.error.HTTPError as exc:
+              print(f"::error::Discord API returned HTTP {exc.code}. Check the bot token and API access.")
+              sys.exit(1)
+          except Exception as exc:
+              print(f"::error::Could not fetch Discord profile: {exc}")
+              sys.exit(1)
+
+          if user.get("id") != user_id:
+              print("::error::Discord API returned an unexpected user ID.")
+              sys.exit(1)
+
+          avatar_hash = user.get("avatar")
+          if avatar_hash:
+              extension = "gif" if avatar_hash.startswith("a_") else "png"
+              avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_hash}.{extension}?size=512"
+          else:
+              default_index = (int(user_id) >> 22) % 6
+              avatar_url = f"https://cdn.discordapp.com/embed/avatars/{default_index}.png"
+
+          data = {
+              "user_id": user_id,
+              "avatar_url": avatar_url,
+          }
+          Path("avatar-sync.json").write_text(
+              json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          print("Discord avatar metadata updated.")
+          PY
+
+      - name: Commit changes if avatar changed
+        run: |
+          if git diff --quiet -- avatar-sync.json; then
+            echo "Avatar has not changed; no commit needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add avatar-sync.json
+          git commit -m "chore: sync Discord avatar"
+          git push
