@@ -6,6 +6,7 @@
     <meta name="description" content="Cr1stalik — Python-разработчик: Discord- и Telegram-боты, веб-проекты и автоматизация."><meta name="theme-color" content="#07070a"><meta property="og:title" content="Cr1stalik | Developer Portfolio"><meta property="og:description" content="Python-разработка, Discord- и Telegram-боты, веб-проекты и автоматизация."><meta property="og:type" content="website"><meta property="og:image" content="https://cr1staloriginal.github.io/avatar.png">
     <title>Cr1stalik | Developer Portfolio</title>
 
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,10 +24,7 @@
 
     <button class="menu-toggle" id="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
     <nav id="site-nav">
-        <a href="#about">Обо мне</a>
-        <a href="#skills">Навыки</a>
-        <a href="#projects">Проекты</a>
-        <a href="#contacts">Контакты</a>
+        <a href="#about">Обо мне</a><a href="#capabilities">Что умею</a><a href="#skills">Стек</a><a href="#projects">Проекты</a><a href="#journey">Мой путь</a><a href="#contacts">Контакты</a>
     </nav>
 </header>
 
@@ -98,6 +96,12 @@
 
 </section>
 
+<section id="capabilities" class="section reveal"><div class="section-kicker">02 / WHAT I BUILD</div><h2>Что я <span class="gradient-text">умею делать</span></h2><p class="section-text section-intro">Практические направления, с которыми я работаю в своих проектах.</p><div class="capability-grid">
+<article class="capability glass"><div class="cap-icon">⌘</div><h3>Discord-боты</h3><p>Команды, модерация, роли, верификация, тикеты, логи и серверная автоматизация.</p><div class="tags"><i>Python</i><i>disnake</i><i>discord.py</i></div></article>
+<article class="capability glass"><div class="cap-icon">↗</div><h3>Telegram-боты</h3><p>Команды, сценарии обработки сообщений и автоматизация повседневных задач.</p><div class="tags"><i>Python</i><i>aiogram</i><i>Bot API</i></div></article>
+<article class="capability glass"><div class="cap-icon">&lt;/&gt;</div><h3>Веб-интерфейсы</h3><p>Адаптивные страницы, продуманные визуальные системы и интерактивные элементы.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i></div></article>
+<article class="capability glass"><div class="cap-icon">DB</div><h3>Данные и автоматизация</h3><p>SQLite, настройки приложений, работа с API и повторяющимися задачами.</p><div class="tags"><i>SQLite</i><i>REST API</i><i>Git</i></div></article></div></section>
+
 <section id="skills" class="section reveal">
     <h2>Стек</h2>
     <p class="section-text stack-intro">Без искусственных процентов — технологии, которые я реально использую или изучаю в проектах.</p>
@@ -115,12 +119,25 @@
     <h2>Проекты</h2>
     <p class="section-text projects-intro">Проекты, которые лучше всего показывают мои направления и интересы.</p>
     <div class="projects-grid">
-        <div class="project glass project-featured"><small>01 · Discord · Python</small><h3>Fluffy</h3><p>Многофункциональный Discord-бот. В проекте прорабатывались модульная структура, модерация, верификация, тикеты, роли, логирование и работа с базой данных.</p><div class="tags"><i>Python</i><i>disnake</i><i>SQLite</i><i>dotenv</i></div><a href="https://github.com/Cr1staloriginal" target="_blank" rel="noopener">Смотреть код на GitHub ↗</a></div>
+        <div class="project glass project-featured"><small>01 · Discord · Python</small><h3>Fluffy</h3><p>Многофункциональный Discord-бот для сообществ: модерация и защита, верификация, тикеты, RP-команды, мини-игры, музыка и уведомления интеграций.</p><div class="tags"><i>Python</i><i>disnake</i><i>SQLite</i><i>dotenv</i></div><a href="fluffy.html">Изучить проект ↗</a><a href="https://github.com/Cr1staloriginal/Fluffy" target="_blank" rel="noopener noreferrer">Исходный код ↗</a></div>
         <div class="project glass"><small>02 · Web</small><h3>Cr1stalik Portfolio</h3><p>Этот сайт: адаптивная верстка, анимации, частицы, интерактивная навигация и тёмный интерфейс.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/cr1staloriginal.github.io" target="_blank" rel="noopener">Исходный код ↗</a></div>
         <div class="project glass"><small>03 · Web</small><h3>Paw Art Studio</h3><p>Отдельный веб-проект, в котором я экспериментирую с интерфейсом и подачей контента.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/Paw_Art_Studio_site" target="_blank" rel="noopener">Репозиторий ↗</a></div>
         <div class="project glass"><small>04 · Experiment</small><h3>SongID</h3><p>Экспериментальный веб-проект, связанный с определением музыки.</p><div class="tags"><i>Web</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/SongID.github.io" target="_blank" rel="noopener">Репозиторий ↗</a></div>
     </div>
 </section>
+
+<section id="workflow" class="section reveal"><div class="section-kicker">05 / WORKFLOW</div><h2>Как я подхожу <span class="gradient-text">к работе</span></h2><div class="workflow-grid">
+<article><span>01</span><h3>Разбираюсь</h3><p>Уточняю задачу, выделяю функции и продумываю структуру.</p></article>
+<article><span>02</span><h3>Собираю</h3><p>Реализую небольшими частями и проверяю, как они работают вместе.</p></article>
+<article><span>03</span><h3>Проверяю</h3><p>Проверяю основные сценарии и исправляю найденные проблемы.</p></article>
+<article><span>04</span><h3>Улучшаю</h3><p>Навожу порядок в коде и постепенно добавляю возможности.</p></article></div></section>
+
+<section id="journey" class="section glass reveal"><div class="section-kicker">06 / MY JOURNEY</div><h2>Мой путь в <span class="gradient-text">разработке</span></h2><div class="timeline">
+<article class="timeline-item"><div class="timeline-marker"></div><div class="timeline-date">ДЕКАБРЬ 2024</div><h3>Начало обучения</h3><p>Начал изучать программирование и разбираться в Python.</p></article>
+<article class="timeline-item"><div class="timeline-marker"></div><div class="timeline-date">2025</div><h3>Боты и веб-проекты</h3><p>Практиковался в создании ботов, интерфейсов, работе с API и базами данных.</p></article>
+<article class="timeline-item"><div class="timeline-marker"></div><div class="timeline-date">2026 · СЕЙЧАС</div><h3>Структура и качество</h3><p>Развиваю Fluffy и уделяю больше внимания архитектуре и удобству использования.</p></article></div></section>
+
+<section id="github" class="section reveal"><div class="section-kicker">07 / OPEN SOURCE</div><h2>Жизнь на <span class="gradient-text">GitHub</span></h2><div class="github-panel glass"><div class="github-profile"><div class="github-avatar">C<span>✦</span></div><div><h3>Cr1staloriginal</h3><p>Проекты, эксперименты и исходный код</p><a href="https://github.com/Cr1staloriginal" target="_blank" rel="noopener noreferrer">Открыть профиль ↗</a></div></div><div class="github-stats" id="github-stats" aria-live="polite"><div><strong>—</strong><span>Репозитории</span></div><div><strong>—</strong><span>Подписчики</span></div><div><strong>—</strong><span>Подписки</span></div></div><p class="github-footnote" id="github-note">Загрузка публичных данных GitHub…</p></div><p class="section-text github-honesty">Показываю только реальные публичные данные — без выдуманных графиков коммитов и достижений.</p></section>
 
 <section id="contacts" class="section glass reveal">
 
@@ -150,7 +167,8 @@
 
 </section>
 
-<footer>© 2026 Cr1stalik — Developer Portfolio. <span>Built with HTML · CSS · JavaScript</span></footer>
+<footer><div><a class="footer-brand" href="#home">Cr1stalik<span>.</span></a><p>Сделано с любопытством и кодом.</p></div><div class="footer-right"><span>© <span id="year">2026</span> Cr1stalik</span><button class="terminal-trigger" id="terminal-trigger" type="button">⌘ terminal</button><a href="#home">Наверх ↑</a></div></footer>
+<div class="terminal-overlay" id="terminal-overlay" hidden><section class="terminal-window" role="dialog" aria-modal="true" aria-labelledby="terminal-title"><div class="terminal-titlebar"><div><span></span><span></span><span></span><b id="terminal-title">cr1stalik@portfolio:~</b></div><button type="button" id="terminal-close" aria-label="Закрыть терминал">×</button></div><div class="terminal-output" id="terminal-output"><p>Cr1stalik interactive shell <span>v1.0</span></p><p>Напиши <b>help</b>, чтобы посмотреть команды.</p></div><form id="terminal-form" class="terminal-form"><label for="terminal-input">visitor@cr1stalik:~$</label><input id="terminal-input" autocomplete="off" spellcheck="false"><button type="submit">↵</button></form><div class="terminal-hint">ESC — закрыть · help, about, stack, projects, contact, clear</div></section></div>
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script src="script.js"></script>
