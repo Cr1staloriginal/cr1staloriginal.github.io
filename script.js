@@ -103,3 +103,26 @@ if(overlay)overlay.addEventListener('click',e=>{if(e.target===overlay)closeTerm(
 if(form)form.addEventListener('submit',e=>{e.preventDefault();const c=(input.value||'').trim().toLowerCase();if(!c)return;line('visitor@cr1stalik:~$ '+c);input.value='';if(c==='clear'){output.replaceChildren();return;}if(c==='exit'){closeTerm();return;}if(commands[c])line(commands[c],'terminal-success');else line('Команда не найдена: '+c+'. Введи help.','terminal-error');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay&&!overlay.hidden)closeTerm();if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='k'){e.preventDefault();if(overlay&&overlay.hidden)openTerm();else closeTerm();}});
 const year=document.getElementById('year');if(year)year.textContent=String(new Date().getFullYear());
+
+
+/* Discord avatar sync: JSON is public metadata; the bot token stays in GitHub Actions Secrets. */
+(async function syncDiscordAvatar() {
+  const images = document.querySelectorAll('[data-discord-avatar]');
+  if (!images.length) return;
+
+  try {
+    const response = await fetch(`avatar-sync.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Avatar metadata is not available yet.');
+    const profile = await response.json();
+    if (typeof profile.avatar_url !== 'string' || !profile.avatar_url.trim()) return;
+
+    images.forEach((image) => {
+      image.addEventListener('error', () => {
+        image.src = 'avatar.png';
+      }, { once: true });
+      image.src = profile.avatar_url;
+    });
+  } catch (error) {
+    /* Keep the bundled avatar.png as a safe offline fallback. */
+  }
+})();
