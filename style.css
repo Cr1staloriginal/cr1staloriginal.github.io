@@ -242,3 +242,15 @@ footer{align-items:center;border-top:1px solid rgba(175,190,255,.07);padding-top
 /* Signature polish: accessible motion and consistent anchor navigation */
 #home{scroll-margin-top:90px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+
+
+/* About section — personal story and realistic growth goals */
+.about-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}
+.about-detail{padding:22px;border:1px solid var(--line);border-radius:17px;background:rgba(17,21,39,.48)}
+.about-detail h3{margin-bottom:12px;font:600 1.02rem 'Space Grotesk',sans-serif}
+.about-detail p{margin-top:9px;color:var(--muted);font-size:.84rem;line-height:1.85}
+.about-detail p:first-of-type{margin-top:0}
+.about-detail strong{color:var(--text);font-weight:600}
+.about-goal{grid-column:1/-1;background:linear-gradient(120deg,rgba(167,139,250,.08),rgba(120,228,232,.035));border-color:rgba(167,139,250,.2)}
+.about-signature{color:#d0c5ff!important;font-weight:600}
+@media(max-width:650px){.about-details{grid-template-columns:1fr}.about-goal{grid-column:auto}.about-detail{padding:19px}}
