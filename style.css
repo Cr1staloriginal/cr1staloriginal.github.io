@@ -44,7 +44,7 @@ header{
   background:rgba(8,10,18,.78);border-bottom:1px solid rgba(175,190,255,.08);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-.logo{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:-.055em}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:-.055em;text-decoration:none}
 .logo::after{content:".";color:var(--purple)}
 nav{display:flex;align-items:center;gap:clamp(16px,2.5vw,32px)}
 nav a{position:relative;color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s ease}
@@ -115,6 +115,9 @@ nav a:hover::after{right:0}
 .project h3{margin:14px 0 10px;font-size:1.3rem}
 .project a{display:inline-flex;margin-top:auto;padding-top:22px;color:#c7bcff;text-decoration:none;font-size:.83rem;font-weight:600;transition:color .2s ease}
 .project a:hover{color:#fff}
+.project a+a{margin-top:0;padding-top:8px}
+.hero-buttons .btn span{margin-left:7px;transition:transform .2s ease}
+.hero-buttons .btn:hover span{transform:translate(2px,2px)}
 .project-featured{grid-column:1/-1;min-height:0;background:linear-gradient(115deg,rgba(89,63,154,.16),rgba(17,21,39,.72) 58%)}
 .contacts{grid-template-columns:repeat(3,minmax(0,1fr))}
 .contact-card{display:block;text-decoration:none;color:var(--text)}
@@ -234,3 +237,8 @@ footer{align-items:center;border-top:1px solid rgba(175,190,255,.07);padding-top
 .project-featured{display:block}
 .project-featured>small,.project-featured>h3,.project-featured>p,.project-featured>.tags,.project-featured>a{grid-column:auto}
 @media(max-width:700px){.project-featured{display:block}}
+
+
+/* Signature polish: accessible motion and consistent anchor navigation */
+#home{scroll-margin-top:90px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
