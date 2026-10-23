@@ -20,7 +20,7 @@
 <div class="blur blur-2"></div>
 
 <header>
-    <div class="logo">Cr1stalik</div>
+    <a class="logo" href="#home" aria-label="Cr1stalik — на главную">Cr1stalik</a>
 
     <button class="menu-toggle" id="menu-toggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
     <nav id="site-nav">
@@ -28,12 +28,12 @@
     </nav>
 </header>
 
-<section class="hero">
+<section class="hero" id="home">
 
     <div class="hero-content">
 
         <div class="status">
-            ● Online & Coding
+            ● Python · Bots · Web
         </div>
 
         <h1>Cr1stalik</h1>
@@ -48,13 +48,8 @@
         </p>
 
         <div class="hero-buttons">
-            <a href="https://github.com/Cr1staloriginal" class="btn primary" target="_blank" rel="noopener noreferrer">
-                GitHub
-            </a>
-
-            <a href="https://t.me/cr1staloriginal" class="btn secondary" target="_blank" rel="noopener noreferrer">
-                Telegram
-            </a>
+            <a href="#projects" class="btn primary">Смотреть проекты <span aria-hidden="true">↘</span></a>
+            <a href="#contacts" class="btn secondary">Связаться со мной</a>
         </div>
 
     </div>
@@ -116,13 +111,40 @@
 </section>
 
 <section id="projects" class="section reveal">
-    <h2>Проекты</h2>
-    <p class="section-text projects-intro">Проекты, которые лучше всего показывают мои направления и интересы.</p>
+    <div class="section-kicker">04 / SELECTED WORK</div>
+    <h2>Проекты и <span class="gradient-text">клиентская разработка</span></h2>
+    <p class="section-text projects-intro">Собственные проекты, эксперименты и работа, выполненная на заказ. В каждой карточке — моя роль и проверяемые ссылки.</p>
     <div class="projects-grid">
-        <div class="project glass project-featured"><small>01 · Discord · Python</small><h3>Fluffy</h3><p>Многофункциональный Discord-бот для сообществ: модерация и защита, верификация, тикеты, RP-команды, мини-игры, музыка и уведомления интеграций.</p><div class="tags"><i>Python</i><i>disnake</i><i>SQLite</i><i>dotenv</i></div><a href="fluffy.html">Изучить проект ↗</a><a href="https://github.com/Cr1staloriginal/Fluffy" target="_blank" rel="noopener noreferrer">Исходный код ↗</a></div>
-        <div class="project glass"><small>02 · Web</small><h3>Cr1stalik Portfolio</h3><p>Этот сайт: адаптивная верстка, анимации, частицы, интерактивная навигация и тёмный интерфейс.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/cr1staloriginal.github.io" target="_blank" rel="noopener">Исходный код ↗</a></div>
-        <div class="project glass"><small>03 · Web</small><h3>Paw Art Studio</h3><p>Отдельный веб-проект, в котором я экспериментирую с интерфейсом и подачей контента.</p><div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/Paw_Art_Studio_site" target="_blank" rel="noopener">Репозиторий ↗</a></div>
-        <div class="project glass"><small>04 · Experiment</small><h3>SongID</h3><p>Экспериментальный веб-проект, связанный с определением музыки.</p><div class="tags"><i>Web</i><i>JavaScript</i></div><a href="https://github.com/Cr1staloriginal/SongID.github.io" target="_blank" rel="noopener">Репозиторий ↗</a></div>
+        <article class="project glass project-featured">
+            <small>01 · OWN PROJECT · DISCORD / PYTHON</small>
+            <h3>Fluffy</h3>
+            <p>Многофункциональный Discord-бот для сообществ: модерация и защита, верификация, тикеты, RP-команды, мини-игры и интеграции. Отдельная страница рассказывает о проекте и его структуре.</p>
+            <div class="tags"><i>Python</i><i>disnake</i><i>SQLite</i><i>Async</i></div>
+            <a href="fluffy.html">Изучить проект ↗</a>
+            <a href="https://github.com/Cr1staloriginal/Fluffy" target="_blank" rel="noopener noreferrer">Исходный код ↗</a>
+        </article>
+        <article class="project glass">
+            <small>02 · PERSONAL PROJECT · WEB</small>
+            <h3>Cr1stalik Portfolio</h3>
+            <p>Личный сайт разработчика: адаптивный интерфейс, анимации, интерактивный терминал, публичная статистика GitHub и синхронизация аватара Discord.</p>
+            <div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i><i>GitHub Actions</i></div>
+            <a href="https://github.com/Cr1staloriginal/cr1staloriginal.github.io" target="_blank" rel="noopener noreferrer">Исходный код ↗</a>
+        </article>
+        <article class="project glass">
+            <small>03 · CLIENT PROJECT · WEB</small>
+            <h3>Paw Art Studio</h3>
+            <p>Сайт студии, разработанный на заказ. В репозитории описаны регистрация, подтверждение email, личный кабинет, кошелёк, промокоды, реферальная система и админ-панель. Это клиентская работа, а не мой собственный продукт.</p>
+            <div class="tags"><i>Node.js</i><i>Express</i><i>SQLite</i><i>Socket.IO</i><i>JavaScript</i></div>
+            <a href="https://pawartstudio.store" target="_blank" rel="noopener noreferrer">Открыть сайт ↗</a>
+            <a href="https://github.com/Cr1staloriginal/Paw_Art_Studio_site" target="_blank" rel="noopener noreferrer">Репозиторий ↗</a>
+        </article>
+        <article class="project glass">
+            <small>04 · EXPERIMENT · WEB</small>
+            <h3>SongID</h3>
+            <p>Экспериментальный веб-прототип с интерфейсом загрузки и поиска треков и идеей классификации музыкальных жанров. Представлен как эксперимент, а не как готовый коммерческий сервис.</p>
+            <div class="tags"><i>HTML</i><i>CSS</i><i>JavaScript</i><i>Web Audio API</i></div>
+            <a href="https://github.com/Cr1staloriginal/SongID.github.io" target="_blank" rel="noopener noreferrer">Исходный код ↗</a>
+        </article>
     </div>
 </section>
 
