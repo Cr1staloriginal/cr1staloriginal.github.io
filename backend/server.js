@@ -287,7 +287,7 @@ app.post('/api/contact', rateLimit({ windowMs: 10 * 60_000, max: 4 }), async (re
     return res.status(503).json({ error: 'Message delivery is not configured yet.' });
   }
   const text = ['Новое сообщение с портфолио', '', 'Имя: ' + name.trim(),
-    'Контакт: ' + contact.trim(), '', message.trim()].join('\n');
+    'Контакт: ' + contact.trim(), 'Тема: ' + String(topic || 'Другое').slice(0, 100), '', message.trim()].join('\n');
   try {
     const response = await fetch('https://api.telegram.org/bot' + env.TELEGRAM_BOT_TOKEN + '/sendMessage', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
