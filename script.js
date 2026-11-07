@@ -126,3 +126,172 @@ const year=document.getElementById('year');if(year)year.textContent=String(new D
     /* Keep the bundled avatar.png as a safe offline fallback. */
   }
 })();
+
+
+/* Portfolio 3.0: public status feed and active project cards. */
+(async function loadPublicStatus(){
+ const status=document.getElementById('now-status'),focus=document.getElementById('now-focus');
+ if(!status&&!focus)return;
+ try{
+  const response=await fetch('data/site-data.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('Status unavailable');
+  const data=await response.json();
+  if(status){
+   const indicator=document.createElement('span');indicator.className='now-indicator';
+   const content=document.createElement('div');
+   const title=document.createElement('strong');title.textContent=(data.status?.label||'Статус не указан')+(data.status?.state?' · '+data.status.state:'');
+   const description=document.createElement('p');description.textContent=data.status?.description||'';
+   content.append(title,description);status.replaceChildren(indicator,content);
+  }
+  if(focus){
+   focus.replaceChildren();
+   (Array.isArray(data.focus)?data.focus:[]).forEach(item=>{
+    const card=document.createElement('article');card.className='now-focus-card';
+    const kind=document.createElement('small');kind.textContent=item.kind||'Проект';
+    const name=document.createElement('b');name.textContent=item.name||'Без названия';
+    const state=document.createElement('span');state.textContent=item.state||'Статус не указан';
+    card.append(kind,name,state);
+    if(typeof item.url==='string'&&/^https:\/\//.test(item.url)){
+     const link=document.createElement('a');link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Открыть ↗';card.append(link);
+    }
+    focus.append(card);
+   });
+  }
+ }catch(error){
+  if(status)status.textContent='Статус временно недоступен. Актуальные ссылки доступны в профиле GitHub.';
+  if(focus)focus.textContent='Не удалось загрузить список активных проектов.';
+ }
+})();
+
+/* Extended public GitHub dashboard: repository cards and language byte totals. */
+(async function loadRepositoryDashboard(){
+ const list=document.getElementById('github-repositories'),languages=document.getElementById('github-languages');
+ if(!list&&!languages)return;
+ try{
+  const response=await fetch('https://api.github.com/users/Cr1staloriginal/repos?sort=updated&per_page=6',{headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw new Error('GitHub API unavailable');
+  const repos=await response.json();
+  if(list){
+   list.replaceChildren();
+   repos.forEach(repo=>{
+    const link=document.createElement('a');link.className='github-repo';link.href=repo.html_url;link.target='_blank';link.rel='noopener noreferrer';
+    const info=document.createElement('span');const name=document.createElement('strong');name.textContent=repo.name;
+    const desc=document.createElement('small');desc.textContent=repo.description||'Публичный репозиторий';
+    info.append(name,desc);
+    const meta=document.createElement('span');meta.className='github-repo-meta';meta.textContent='★ '+Number(repo.stargazers_count||0);
+    link.append(info,meta);list.append(link);
+   });
+   if(!repos.length)list.textContent='Публичные репозитории не найдены.';
+  }
+  if(languages){
+   const totals={};
+   const languageResults=await Promise.all(repos.slice(0,6).map(async repo=>{
+    try{const r=await fetch(repo.languages_url,{headers:{Accept:'application/vnd.github+json'}});return r.ok?await r.json():{};}catch(_){return {};}
+   }));
+   languageResults.forEach(result=>Object.entries(result).forEach(([name,bytes])=>{totals[name]=(totals[name]||0)+Number(bytes||0);}));
+   const sorted=Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+   languages.replaceChildren();
+   const total=sorted.reduce((sum,item)=>sum+item[1],0);
+   if(!total){languages.textContent='GitHub пока не вернул данные о языках.';return;}
+   sorted.forEach(([name,bytes])=>{
+    const row=document.createElement('div');row.className='language-row';
+    const label=document.createElement('span');label.textContent=name;
+    const track=document.createElement('span');track.className='language-track';
+    const fill=document.createElement('span');fill.className='language-fill';fill.style.display='block';fill.style.width=(bytes/total*100).toFixed(1)+'%';track.append(fill);
+    const percent=document.createElement('span');percent.className='language-percent';percent.textContent=Math.round(bytes/total*100)+'%';
+    row.append(label,track,percent);languages.append(row);
+   });
+  }
+ }catch(error){
+  if(list)list.textContent='Репозитории временно недоступны. Открой профиль GitHub по ссылке выше.';
+  if(languages)languages.textContent='Статистика языков временно недоступна.';
+ }
+})();
+
+/* Theme palette and particle preference are local to this visitor's browser. */
+(function setupAppearance(){
+ const trigger=document.getElementById('appearance-trigger'),panel=document.getElementById('appearance-panel');
+ if(!trigger||!panel)return;
+ const themeButtons=panel.querySelectorAll('[data-theme-choice]');
+ const applyTheme=theme=>{
+  const selected=['signature','violet','ocean'].includes(theme)?theme:'signature';
+  document.body.dataset.theme=selected==='signature'?'':selected;
+  try{localStorage.setItem('cr1stalik-theme',selected);}catch(_){}
+  themeButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.themeChoice===selected)));
+ };
+ let savedTheme='signature';try{savedTheme=localStorage.getItem('cr1stalik-theme')||'signature';}catch(_){}
+ applyTheme(savedTheme);
+ themeButtons.forEach(button=>button.addEventListener('click',()=>applyTheme(button.dataset.themeChoice)));
+ trigger.addEventListener('click',()=>{
+  panel.hidden=!panel.hidden;
+  trigger.setAttribute('aria-expanded',String(!panel.hidden));
+ });
+ const particleButton=document.getElementById('particles-toggle'),particles=document.getElementById('particles-js');
+ let particlesOn=true;try{particlesOn=localStorage.getItem('cr1stalik-particles')!=='off';}catch(_){}
+ const applyParticles=()=>{
+  if(particles)particles.style.display=particlesOn?'':'none';
+  if(particleButton){particleButton.textContent='Частицы: '+(particlesOn?'вкл.':'выкл.');particleButton.setAttribute('aria-pressed',String(particlesOn));}
+ };
+ applyParticles();
+ if(particleButton)particleButton.addEventListener('click',()=>{particlesOn=!particlesOn;try{localStorage.setItem('cr1stalik-particles',particlesOn?'on':'off');}catch(_){}applyParticles();});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!panel.hidden){panel.hidden=true;trigger.setAttribute('aria-expanded','false');trigger.focus();}});
+})();
+
+/* Subtle cursor spotlight on pointer devices only; no effect on touch screens. */
+if(window.matchMedia('(pointer:fine)').matches&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+ let queued=false,lastX=0,lastY=0;
+ document.addEventListener('pointermove',event=>{
+  lastX=event.clientX;lastY=event.clientY;
+  if(queued)return;queued=true;
+  requestAnimationFrame(()=>{document.documentElement.style.setProperty('--pointer-x',lastX+'px');document.documentElement.style.setProperty('--pointer-y',lastY+'px');queued=false;});
+ },{passive:true});
+}
+
+/* Extra terminal commands for the Portfolio 3.0 sections. */
+Object.assign(commands,{
+ help:'Команды: help, about, stack, projects, contact, whoami, ls, pwd, date, roadmap, github, status, updates, achievements, theme, matrix, clear, exit',
+ roadmap:'Roadmap: roadmap.html — этапы развития и планы.',
+ github:'GitHub Dashboard: публичные репозитории и языки загружаются из GitHub API.',
+ status:'Текущий статус и активные проекты находятся в разделе «Сейчас в работе».',
+ updates:'История обновлений и подтверждённые этапы: updates.html.',
+ achievements:'Достижения показывают только реальные этапы, подтверждённые проектами.',
+ theme:'Открой «Вид» внизу страницы, чтобы выбрать фирменную, Violet или Ocean палитру.',
+ matrix:'01000011 01110010 01110001 01110011 01110100 01100001 01101100 01101001 01101011 — любопытство превращает идеи в код.'
+});
+
+/* Contact form: use the backend when configured, otherwise prepare a Telegram draft. */
+(function setupContactForm(){
+ const form=document.getElementById('contact-form');
+ if(!form)return;
+ const feedback=document.getElementById('contact-form-feedback');
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const name=(document.getElementById('contact-name')?.value||'').trim();
+  const contact=(document.getElementById('contact-contact')?.value||'').trim();
+  const topic=document.getElementById('contact-topic')?.value||'Другое';
+  const message=(document.getElementById('contact-message')?.value||'').trim();
+  if(!name||!contact||!message){if(feedback)feedback.textContent='Заполни имя, способ связи и сообщение.';return;}
+  const apiSetting=(document.querySelector('meta[name="portfolio-api"]')?.content||'').trim();
+  const apiBase=apiSetting==='same-origin'?'':apiSetting.replace(/\/$/,'');
+  if(apiSetting){
+   if(feedback)feedback.textContent='Отправляю сообщение…';
+   try{
+    const response=await fetch(apiBase+'/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({name,contact,topic,message,website:''})});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(result.error||'Не удалось отправить сообщение.');
+    if(feedback)feedback.textContent='Сообщение доставлено. Спасибо!';
+    form.reset();
+    return;
+   }catch(error){
+    if(feedback)feedback.textContent=error.message+' Используй прямую ссылку Telegram ниже.';
+    return;
+   }
+  }
+  const draft='Привет! Меня зовут '+name+'.\nКонтакт для ответа: '+contact+'.\nТема: '+topic+'.\n\n'+message;
+  const url='https://t.me/cr1staloriginal?text='+encodeURIComponent(draft);
+  if(feedback)feedback.textContent='Backend пока не подключён. Открываю Telegram с черновиком — проверь его и отправь вручную.';
+  const opened=window.open(url,'_blank','noopener,noreferrer');
+  if(!opened&&feedback)feedback.textContent='Если Telegram не открылся, используй контактную ссылку Telegram выше и скопируй сообщение.';
+ });
+})();

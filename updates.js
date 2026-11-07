@@ -1,0 +1,9 @@
+(() => {
+ const safeDate = value => String(value || '').replace(/[<>]/g,'');
+ const make = (tag,cls,text) => {const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=text;return el;};
+ async function load(path){const response=await fetch(path,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);return response.json();}
+ const changelog=document.getElementById('changelog-list');
+ const achievements=document.getElementById('achievement-list');
+ if(changelog)load('data/changelog.json').then(items=>{changelog.replaceChildren();items.slice().reverse().forEach(item=>{const article=make('article','update-entry','');const date=make('div','update-date',safeDate(item.date));const body=make('div','','');body.append(make('span','update-version',safeDate(item.version)),make('h3','',safeDate(item.title)),make('p','',safeDate(item.details)),make('span','update-state',safeDate(item.status)));article.append(date,body);changelog.append(article);});}).catch(()=>{changelog.textContent='История обновлений временно недоступна.';});
+ if(achievements)load('data/achievements.json').then(items=>{achievements.replaceChildren();items.slice().reverse().forEach(item=>{const card=make('article','achievement-card','');const meta=make('div','achievement-meta','');meta.append(make('span','',safeDate(item.category)),make('time','',safeDate(item.date)));card.append(meta,make('h3','',safeDate(item.title)),make('p','',safeDate(item.description)));if(item.url){const url=String(item.url);const safeExternal=/^https:\/\//.test(url);const safeLocal=/^[a-z0-9-]+\.html(?:#[a-z0-9_-]+)?$/i.test(url);if(safeExternal||safeLocal){const a=make('a','','Подробнее ↗');a.href=url;if(safeExternal){a.target='_blank';a.rel='noopener noreferrer';}card.append(a);}}achievements.append(card);});}).catch(()=>{achievements.textContent='Этапы временно недоступны.';});
+})();

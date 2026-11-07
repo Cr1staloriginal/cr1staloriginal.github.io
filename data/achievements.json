@@ -1,0 +1,30 @@
+[
+  {
+    "date": "2024-12",
+    "title": "Начало пути в программировании",
+    "description": "Начал изучать программирование и Python.",
+    "category": "Обучение",
+    "url": "roadmap.html"
+  },
+  {
+    "date": "2026",
+    "title": "Первый клиентский веб-проект",
+    "description": "Получен практический опыт разработки сайта Paw Art Studio на заказ.",
+    "category": "Клиентская работа",
+    "url": "paw-art-studio.html"
+  },
+  {
+    "date": "2026",
+    "title": "Phoenix RP: Android foundation",
+    "description": "В репозитории появился нативный Android-клиент на Kotlin с локальным хранением историй и персонажей.",
+    "category": "Разработка",
+    "url": "phoenix-rp.html"
+  },
+  {
+    "date": "2026",
+    "title": "Портфолио с открытым исходным кодом",
+    "description": "Личный сайт разработчика опубликован на GitHub Pages и развивается в отдельном публичном репозитории.",
+    "category": "Web",
+    "url": "https://github.com/Cr1staloriginal/cr1staloriginal.github.io"
+  }
+]
