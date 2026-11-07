@@ -287,7 +287,7 @@ Object.assign(commands,{
     return;
    }
   }
-  const draft='Привет! Меня зовут '+name+'.\\nКонтакт для ответа: '+contact+'.\\nТема: '+topic+'.\\n\\n'+message;
+  const draft='Привет! Меня зовут '+name+'.\nКонтакт для ответа: '+contact+'.\nТема: '+topic+'.\n\n'+message;
   const url='https://t.me/cr1staloriginal?text='+encodeURIComponent(draft);
   if(feedback)feedback.textContent='Backend пока не подключён. Открываю Telegram с черновиком — проверь его и отправь вручную.';
   const opened=window.open(url,'_blank','noopener,noreferrer');
