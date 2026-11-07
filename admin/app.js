@@ -1,5 +1,6 @@
 (() => {
-  const apiBase = (document.querySelector('meta[name="portfolio-api"]')?.content || '').replace(/\/$/, '');
+  const apiSetting = (document.querySelector('meta[name="portfolio-api"]')?.content || '').trim();
+  const apiBase = apiSetting === 'same-origin' ? '' : apiSetting.replace(/\/$/, '');
   const api = (path) => apiBase + path;
   const loginPanel = document.getElementById('login-panel');
   const editorPanel = document.getElementById('editor-panel');
