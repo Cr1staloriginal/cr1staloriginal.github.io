@@ -5,6 +5,7 @@ const crypto = require('node:crypto');
 
 const app = express();
 app.disable('x-powered-by');
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '32kb', strict: true }));
 
 const env = process.env;
@@ -150,7 +151,7 @@ app.get('/api/auth/github', rateLimit({ max: 10 }), (_req, res) => {
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', env.GITHUB_CLIENT_ID);
   url.searchParams.set('redirect_uri', env.GITHUB_CALLBACK_URL);
-  url.searchParams.set('scope', 'read:user');
+  url.searchParams.set('scope', 'public_repo');
   url.searchParams.set('state', state);
   res.redirect(url.toString());
 });
@@ -176,7 +177,7 @@ app.get('/api/auth/callback', rateLimit({ max: 20 }), async (req, res) => {
     const user = await userResponse.json();
     if (!userResponse.ok || user.login !== env.ADMIN_GITHUB_LOGIN) return res.status(403).send('This GitHub account is not allowed.');
     const value = encryptSession({ login: user.login, token: tokenData.access_token, expiresAt: Date.now() + 3_600_000 });
-    setCookie(res, SESSION_COOKIE, value, { maxAge: 3600, sameSite: 'None' });
+    setCookie(res, SESSION_COOKIE, value, { maxAge: 3600, sameSite: COOKIE_SECURE ? 'None' : 'Lax' });
     res.redirect(APP_ORIGIN + '/admin/');
   } catch (error) {
     console.error('OAuth callback failed:', error.message);
@@ -238,7 +239,7 @@ app.post('/api/admin/content', requireAdmin, rateLimit({ max: 12 }), async (req,
 });
 
 app.post('/api/contact', rateLimit({ windowMs: 10 * 60_000, max: 4 }), async (req, res) => {
-  const { name, contact, message, website } = req.body || {};
+  const { name, contact, message, topic, website } = req.body || {};
   if (website) return res.json({ ok: true });
   if (![name, contact, message].every((v) => typeof v === 'string') ||
       name.trim().length < 2 || name.length > 80 || contact.trim().length < 3 ||
