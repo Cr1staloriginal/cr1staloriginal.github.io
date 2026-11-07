@@ -258,3 +258,22 @@ Object.assign(commands,{
  theme:'Открой «Вид» внизу страницы, чтобы выбрать фирменную, Violet или Ocean палитру.',
  matrix:'01000011 01110010 01110001 01110011 01110100 01100001 01101100 01101001 01101011 — любопытство превращает идеи в код.'
 });
+
+/* Contact form prepares a Telegram draft; the visitor explicitly sends it in Telegram. */
+(function setupContactForm(){
+ const form=document.getElementById('contact-form');
+ if(!form)return;
+ const feedback=document.getElementById('contact-form-feedback');
+ form.addEventListener('submit',event=>{
+  event.preventDefault();
+  const name=(document.getElementById('contact-name')?.value||'').trim();
+  const topic=document.getElementById('contact-topic')?.value||'Другое';
+  const message=(document.getElementById('contact-message')?.value||'').trim();
+  if(!name||!message){if(feedback)feedback.textContent='Заполни имя и сообщение.';return;}
+  const draft='Привет! Меня зовут '+name+'.\nТема: '+topic+'.\n\n'+message;
+  const url='https://t.me/cr1staloriginal?text='+encodeURIComponent(draft);
+  if(feedback)feedback.textContent='Открываю Telegram с подготовленным черновиком. Проверь его и отправь вручную.';
+  const opened=window.open(url,'_blank','noopener,noreferrer');
+  if(!opened&&feedback)feedback.textContent='Если Telegram не открылся, используй контактную ссылку Telegram выше и скопируй своё сообщение.';
+ });
+})();
