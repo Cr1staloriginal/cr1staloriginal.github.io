@@ -1,41 +1,29 @@
-# Backend: админ-панель и сообщения
+# Портфолио без VPS: GitHub-only
 
-Серверная часть подготовлена в каталоге backend/. Это Node.js 20+ API для GitHub Pages: защищённая CMS и доставка формы обратной связи через Telegram Bot API.
+Проект работает на GitHub Pages. Отдельный Node.js backend, VPS, домен API и GitHub App для CMS не нужны.
 
-## Что реализовано
+## Управление контентом
 
-- /admin/ — интерфейс входа и редактирования трёх публичных JSON-файлов.
-- GitHub App user authorization: допускается только аккаунт Cr1staloriginal.
-- Короткоживущий installation token ограничен одним репозиторием и разрешениями Contents / Pull requests.
-- Изменения CMS создают отдельную ветку и Pull Request; напрямую в main ничего не записывается.
-- Сессионная cookie HttpOnly, AES-256-GCM, проверка OAuth state.
-- Серверная валидация JSON и ограничение размера; rate limit на CMS и форму.
-- POST /api/contact отправляет сообщения через Telegram Bot API, если настроены серверные секреты.
-- Если API URL не настроен, форма на главной готовит Telegram-черновик и не заявляет, что сообщение отправлено.
+1. Открой опубликованный сайт и перейди в `/admin/`.
+2. Выбери JSON-раздел и отредактируй содержимое.
+3. Нажми «Проверить и подготовить PR» — панель проверит JSON, скопирует его и откроет GitHub Actions.
+4. В workflow **Portfolio CMS** выбери тот же файл, вставь содержимое в поле `content` и запусти workflow.
+5. Запуск разрешён только GitHub-аккаунту `Cr1staloriginal`. Workflow проверяет структуру данных и создаёт Pull Request.
+6. Проверь PR и объедини его в `main`. После деплоя GitHub Pages изменения появятся на сайте.
 
-## Что требуется для запуска
+## Права и секреты
 
-1. VPS или другой Node.js-хостинг (Node.js 20+).
-2. Домен портфолио и HTTPS. Для надёжных сессий рекомендуется проксировать /api/* на backend с того же origin, где размещён сайт.
-3. GitHub App, установленный только на Cr1staloriginal/cr1staloriginal.github.io, с правами Contents: read/write и Pull requests: read/write.
-4. Переменные GitHub App из backend/.env.example.
-5. Отдельный Telegram bot token и chat ID для получения сообщений. Токен Fluffy не требуется и использовать его не нужно.
+Workflow использует встроенный `GITHUB_TOKEN` с минимальными правами:
+- Contents: write
+- Pull requests: write
 
-## Развёртывание на VPS
+Никакие PAT, Discord-токены, токены Fluffy или секреты в коде сайта не нужны.
 
-~~~bash
-cd /var/www
-git clone https://github.com/Cr1staloriginal/cr1staloriginal.github.io.git portfolio-api
-cd portfolio-api/backend
-cp .env.example .env
-# Заполни .env на сервере; не отправляй его в Git.
-npm install
-npm run check
-npm start
-~~~
+## Ограничения
 
-Сервис слушает 127.0.0.1:8787. Настрой Nginx/Caddy с HTTPS и проксированием /api/ на этот порт. Для Docker в образе задан HOST=0.0.0.0.
+GitHub Pages — статический хостинг. В GitHub-only конфигурации:
+- нет постоянного API-сервера;
+- нет автоматической отправки контактной формы в Telegram (остаётся Telegram-черновик);
+- CMS запускается через GitHub Actions и создаёт PR, а не меняет `main` напрямую.
 
-Не запускай команды с реальными токенами в публичных сообщениях и не добавляй .env в репозиторий. backend/.gitignore уже исключает секреты и зависимости.
-
-Полные детали: backend/README.md.
+Каталог `backend/` — оставшийся исходник прежнего серверного варианта. Он не участвует в публикации GitHub-only CMS и не требует настройки. Не запускай его и не добавляй секреты в репозиторий.
