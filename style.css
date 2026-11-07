@@ -314,3 +314,5 @@ body[data-theme="ocean"]::before{background:radial-gradient(ellipse at 12% 8%,rg
 .contact-message-form select option{background:#111527;color:#f4f5ff}
 .contact-form-feedback{min-height:1.2em;color:var(--muted);font-size:.75rem}
 @media(max-width:600px){.contact-message-form{grid-template-columns:1fr}.contact-message-form label,.contact-message-form input,.contact-message-form select,.contact-message-form textarea,.contact-message-form button,.contact-form-feedback{grid-column:1}}
+
+footer{position:relative}.footer-right{flex-wrap:wrap}@media(max-width:600px){.footer-right{gap:10px 12px}}
