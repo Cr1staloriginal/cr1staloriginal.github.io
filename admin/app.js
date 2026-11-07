@@ -59,7 +59,7 @@
       const normalized = validateContent();
       editor.value = normalized;
       await navigator.clipboard.writeText(normalized);
-      message('JSON проверен и скопирован. Сейчас откроется GitHub Actions — запусти workflow и вставь содержимое в поле content.', 'admin-success);
+      message('JSON проверен и скопирован. Открой GitHub Actions по ссылке ниже, запусти workflow и вставь содержимое в поле content.', 'admin-success');
       const link = document.createElement('a');
       link.href = workflowUrl;
       link.target = '_blank';
@@ -67,7 +67,6 @@
       link.textContent = 'Открыть Portfolio CMS в GitHub Actions ↗';
       prResult.replaceChildren(link);
       prResult.hidden = false;
-      window.open(workflowUrl, '_blank', 'noopener');
     } catch (error) {
       message(error.name === 'NotAllowedError'
         ? 'Браузер запретил копирование. Разреши доступ к буферу обмена или скопируй JSON вручную.'
