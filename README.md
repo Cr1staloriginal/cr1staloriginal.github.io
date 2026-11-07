@@ -20,7 +20,8 @@
 | `phoenix-rp.html` | Кейс Android-приложения Phoenix RP |
 | `songid.html` | Кейс экспериментального SongID |
 | `roadmap.html` | Карта развития и проекты |
-| `updates.html` | Changelog и подтверждённые достижения |\n| `admin/index.html` | Закрытая CMS (активируется после backend deployment) |
+| `updates.html` | Changelog и подтверждённые достижения |
+| `admin/index.html` | Закрытая CMS (активируется после backend deployment) |
 
 ## Публичные данные
 
