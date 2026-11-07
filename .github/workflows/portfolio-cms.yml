@@ -1,0 +1,92 @@
+name: Portfolio CMS
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_file:
+        description: "Какой раздел обновить"
+        required: true
+        type: choice
+        options:
+          - data/site-data.json
+          - data/changelog.json
+          - data/achievements.json
+      content:
+        description: "Полное JSON-содержимое выбранного файла (вставь из админ-панели)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: portfolio-cms
+  cancel-in-progress: false
+
+jobs:
+  create-content-pr:
+    if: github.actor == 'Cr1staloriginal'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Validate and format CMS data
+        env:
+          TARGET_FILE: ${{ inputs.target_file }}
+          CMS_CONTENT: ${{ inputs.content }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = process.env.TARGET_FILE;
+          const content = process.env.CMS_CONTENT;
+          const allowed = new Set([
+            'data/site-data.json',
+            'data/changelog.json',
+            'data/achievements.json'
+          ]);
+          if (!allowed.has(file)) throw new Error('File is not allowed.');
+          if (Buffer.byteLength(content, 'utf8') > 24000) throw new Error('JSON is larger than 24 KB.');
+          const data = JSON.parse(content);
+          if (file === 'data/site-data.json') {
+            if (!data || Array.isArray(data) || typeof data !== 'object' ||
+                !data.status || typeof data.status !== 'object' ||
+                typeof data.status.label !== 'string' ||
+                typeof data.status.state !== 'string' ||
+                typeof data.status.description !== 'string' ||
+                !Array.isArray(data.focus)) {
+              throw new Error('site-data.json schema is invalid.');
+            }
+          } else if (!Array.isArray(data)) {
+            throw new Error(file + ' must contain a JSON array.');
+          }
+          fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n', 'utf8');
+          console.log('Validated and formatted ' + file);
+          NODE
+
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: cms/update-${{ github.run_id }}
+          delete-branch: true
+          commit-message: "content: update portfolio data"
+          title: "CMS: обновление данных портфолио"
+          body: |
+            Изменения подготовлены через GitHub-only CMS.
+
+            - Автор запуска: @${{ github.actor }}
+            - Файл: ${{ inputs.target_file }}
+
+            Проверьте изменения и объедините PR, чтобы опубликовать их на GitHub Pages.
+          add-paths: |
+            ${{ inputs.target_file }}
+
+      - name: Report result
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: |
+          echo "Pull request: ${{ steps.cpr.outputs.pull-request-url }}"
