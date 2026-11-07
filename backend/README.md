@@ -26,7 +26,7 @@ npm run check
 npm start
 ```
 
-The service listens on `127.0.0.1:8787`; put Nginx or Caddy in front of it with HTTPS.
+The service listens on `127.0.0.1:8787` by default; the Docker image sets `HOST=0.0.0.0`. Put Nginx or Caddy in front of it with HTTPS.
 
 ## Required environment
 
