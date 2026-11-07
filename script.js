@@ -168,7 +168,7 @@ const year=document.getElementById('year');if(year)year.textContent=String(new D
  const list=document.getElementById('github-repositories'),languages=document.getElementById('github-languages');
  if(!list&&!languages)return;
  try{
-  const response=await fetch('https://api.github.com/users/Cr1staloriginal/repos?sort=updated&per_page=6&type=public',{headers:{Accept:'application/vnd.github+json'}});
+  const response=await fetch('https://api.github.com/users/Cr1staloriginal/repos?sort=updated&per_page=6',{headers:{Accept:'application/vnd.github+json'}});
   if(!response.ok)throw new Error('GitHub API unavailable');
   const repos=await response.json();
   if(list){
