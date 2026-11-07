@@ -271,8 +271,9 @@ Object.assign(commands,{
   const topic=document.getElementById('contact-topic')?.value||'Другое';
   const message=(document.getElementById('contact-message')?.value||'').trim();
   if(!name||!contact||!message){if(feedback)feedback.textContent='Заполни имя, способ связи и сообщение.';return;}
-  const apiBase=(document.querySelector('meta[name="portfolio-api"]')?.content||'').replace(/\/$/,'');
-  if(apiBase){
+  const apiSetting=(document.querySelector('meta[name="portfolio-api"]')?.content||'').trim();
+  const apiBase=apiSetting==='same-origin'?'':apiSetting.replace(/\/$/,'');
+  if(apiSetting){
    if(feedback)feedback.textContent='Отправляю сообщение…';
    try{
     const response=await fetch(apiBase+'/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
