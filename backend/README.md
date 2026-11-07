@@ -47,6 +47,6 @@ The in-memory rate limiter is suitable only for a single service instance. For m
 - `POST /api/auth/logout`
 - `GET /api/admin/content?file=data/site-data.json`
 - `POST /api/admin/content` with `{ "file": "...", "content": "valid JSON text" }`
-- `POST /api/contact` with `{ "name", "contact", "message", "website" }`
+- `POST /api/contact` with `{ "name", "contact", "topic", "message", "website" }`
 
 CMS saves return a pull-request URL. Review and merge each PR as usual.
