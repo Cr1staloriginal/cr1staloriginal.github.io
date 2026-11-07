@@ -23,6 +23,8 @@ jobs:
           node --check script.js
           node --check updates.js
           node --check case-study.js
+          node --check admin/app.js
+          node --check backend/server.js
       - name: Validate public JSON data
         run: |
           node -e "for (const file of ['data/site-data.json','data/changelog.json','data/achievements.json']) { JSON.parse(require('fs').readFileSync(file, 'utf8')); console.log('Valid:', file); }"
@@ -39,3 +41,6 @@ jobs:
           test -f updates.html
           test -f case-study.css
           test -f updates.css
+          test -f admin/index.html
+          test -f backend/server.js
+          test -f backend/package.json
