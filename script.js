@@ -249,6 +249,7 @@ if(window.matchMedia('(pointer:fine)').matches&&!window.matchMedia('(prefers-red
 
 /* Extra terminal commands for the Portfolio 3.0 sections. */
 Object.assign(commands,{
+ help:'Команды: help, about, stack, projects, contact, whoami, ls, pwd, date, roadmap, github, status, updates, achievements, theme, matrix, clear, exit',
  roadmap:'Roadmap: roadmap.html — этапы развития и планы.',
  github:'GitHub Dashboard: публичные репозитории и языки загружаются из GitHub API.',
  status:'Текущий статус и активные проекты находятся в разделе «Сейчас в работе».',
