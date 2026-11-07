@@ -294,3 +294,8 @@ body[data-theme="violet"]::before{background:radial-gradient(ellipse at 12% 8%,r
 body[data-theme="ocean"]::before{background:radial-gradient(ellipse at 12% 8%,rgba(35,105,175,.2),transparent 36%),radial-gradient(ellipse at 88% 58%,rgba(36,145,166,.13),transparent 38%),linear-gradient(180deg,#080a12 0%,#0a0d18 55%,#080a12 100%)}
 @media(max-width:760px){.github-dashboard{grid-template-columns:1fr}.now-focus{grid-template-columns:1fr}.appearance-panel{right:5%;bottom:85px}}
 @media(prefers-reduced-motion:reduce){.github-repo{transition:none}.github-repo:hover{transform:none}}
+
+/* Pointer spotlight: decorative only, disabled by reduced-motion preference in JS. */
+@media(hover:hover) and (pointer:fine){
+ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.23;background:radial-gradient(300px circle at var(--pointer-x,50%) var(--pointer-y,50%),rgba(130,151,255,.13),transparent 72%)}
+}
