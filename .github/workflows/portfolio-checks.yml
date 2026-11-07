@@ -1,0 +1,39 @@
+name: Portfolio checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check script.js
+          node --check updates.js
+          node --check case-study.js
+      - name: Validate public JSON data
+        run: |
+          node -e "for (const file of ['data/site-data.json','data/changelog.json','data/achievements.json']) { JSON.parse(require('fs').readFileSync(file, 'utf8')); console.log('Valid:', file); }"
+      - name: Check required pages and assets
+        run: |
+          test -f index.html
+          test -f roadmap.html
+          test -f fluffy.html
+          test -f paw-art-studio.html
+          test -f phoenix-rp.html
+          test -f songid.html
+          test -f updates.html
+          test -f case-study.css
+          test -f updates.css
