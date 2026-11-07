@@ -5,7 +5,7 @@
 ## Что реализовано
 
 - /admin/ — интерфейс входа и редактирования трёх публичных JSON-файлов.
-- GitHub App user authorization: допускается только аккаунт Cr1stalik.
+- GitHub App user authorization: допускается только аккаунт Cr1staloriginal.
 - Короткоживущий installation token ограничен одним репозиторием и разрешениями Contents / Pull requests.
 - Изменения CMS создают отдельную ветку и Pull Request; напрямую в main ничего не записывается.
 - Сессионная cookie HttpOnly, AES-256-GCM, проверка OAuth state.
