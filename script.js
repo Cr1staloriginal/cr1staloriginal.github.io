@@ -259,21 +259,38 @@ Object.assign(commands,{
  matrix:'01000011 01110010 01110001 01110011 01110100 01100001 01101100 01101001 01101011 — любопытство превращает идеи в код.'
 });
 
-/* Contact form prepares a Telegram draft; the visitor explicitly sends it in Telegram. */
+/* Contact form: use the backend when configured, otherwise prepare a Telegram draft. */
 (function setupContactForm(){
  const form=document.getElementById('contact-form');
  if(!form)return;
  const feedback=document.getElementById('contact-form-feedback');
- form.addEventListener('submit',event=>{
+ form.addEventListener('submit',async event=>{
   event.preventDefault();
   const name=(document.getElementById('contact-name')?.value||'').trim();
+  const contact=(document.getElementById('contact-contact')?.value||'').trim();
   const topic=document.getElementById('contact-topic')?.value||'Другое';
   const message=(document.getElementById('contact-message')?.value||'').trim();
-  if(!name||!message){if(feedback)feedback.textContent='Заполни имя и сообщение.';return;}
-  const draft='Привет! Меня зовут '+name+'.\nТема: '+topic+'.\n\n'+message;
+  if(!name||!contact||!message){if(feedback)feedback.textContent='Заполни имя, способ связи и сообщение.';return;}
+  const apiBase=(document.querySelector('meta[name="portfolio-api"]')?.content||'').replace(/\/$/,'');
+  if(apiBase){
+   if(feedback)feedback.textContent='Отправляю сообщение…';
+   try{
+    const response=await fetch(apiBase+'/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({name,contact,topic,message,website:''})});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(result.error||'Не удалось отправить сообщение.');
+    if(feedback)feedback.textContent='Сообщение доставлено. Спасибо!';
+    form.reset();
+    return;
+   }catch(error){
+    if(feedback)feedback.textContent=error.message+' Используй прямую ссылку Telegram ниже.';
+    return;
+   }
+  }
+  const draft='Привет! Меня зовут '+name+'.\\nКонтакт для ответа: '+contact+'.\\nТема: '+topic+'.\\n\\n'+message;
   const url='https://t.me/cr1staloriginal?text='+encodeURIComponent(draft);
-  if(feedback)feedback.textContent='Открываю Telegram с подготовленным черновиком. Проверь его и отправь вручную.';
+  if(feedback)feedback.textContent='Backend пока не подключён. Открываю Telegram с черновиком — проверь его и отправь вручную.';
   const opened=window.open(url,'_blank','noopener,noreferrer');
-  if(!opened&&feedback)feedback.textContent='Если Telegram не открылся, используй контактную ссылку Telegram выше и скопируй своё сообщение.';
+  if(!opened&&feedback)feedback.textContent='Если Telegram не открылся, используй контактную ссылку Telegram выше и скопируй сообщение.';
  });
 })();
