@@ -299,3 +299,18 @@ body[data-theme="ocean"]::before{background:radial-gradient(ellipse at 12% 8%,rg
 @media(hover:hover) and (pointer:fine){
  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.23;background:radial-gradient(300px circle at var(--pointer-x,50%) var(--pointer-y,50%),rgba(130,151,255,.13),transparent 72%)}
 }
+
+
+/* Contact form uses a transparent Telegram hand-off; no message is silently stored or sent. */
+.contact-form-wrap{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+.contact-form-wrap h3{margin:8px 0;font:600 1.35rem 'Space Grotesk',sans-serif}
+.contact-form-note{max-width:720px;margin-bottom:20px;color:var(--muted);font-size:.82rem;line-height:1.8}
+.contact-message-form{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;max-width:760px}
+.contact-message-form label{align-self:end;color:var(--muted);font-size:.75rem}
+.contact-message-form input,.contact-message-form select,.contact-message-form textarea{width:100%;min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(8,10,18,.58);color:var(--text);font:400 .84rem 'Inter',sans-serif}
+.contact-message-form input:focus,.contact-message-form select:focus,.contact-message-form textarea:focus{outline:2px solid var(--cyan);outline-offset:2px}
+.contact-message-form textarea{resize:vertical;min-height:110px}
+.contact-message-form label[for="contact-message"],.contact-message-form textarea,.contact-message-form button,.contact-form-feedback{grid-column:1/-1}
+.contact-message-form select option{background:#111527;color:#f4f5ff}
+.contact-form-feedback{min-height:1.2em;color:var(--muted);font-size:.75rem}
+@media(max-width:600px){.contact-message-form{grid-template-columns:1fr}.contact-message-form label,.contact-message-form input,.contact-message-form select,.contact-message-form textarea,.contact-message-form button,.contact-form-feedback{grid-column:1}}
