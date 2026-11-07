@@ -9,5 +9,6 @@
     "check": "node --check server.js"
   },
   "engines": { "node": ">=20" },
-  "dependencies": { "express": "^5.1.0" }
+  "dependencies": { "express": "^5.1.0",
+    "dotenv": "^16.6.1" }
 }
