@@ -26,6 +26,8 @@ jobs:
       - name: Validate public JSON data
         run: |
           node -e "for (const file of ['data/site-data.json','data/changelog.json','data/achievements.json']) { JSON.parse(require('fs').readFileSync(file, 'utf8')); console.log('Valid:', file); }"
+      - name: Validate HTML, local assets and anchors
+        run: python scripts/validate_portfolio.py
       - name: Check required pages and assets
         run: |
           test -f index.html
