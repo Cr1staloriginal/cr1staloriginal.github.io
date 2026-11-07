@@ -1,5 +1,7 @@
 'use strict';
 
+require('dotenv').config();
+
 const express = require('express');
 const crypto = require('node:crypto');
 
@@ -308,4 +310,5 @@ app.use((error, _req, res, _next) => {
 });
 
 const port = Number(env.PORT || 8787);
-app.listen(port, '127.0.0.1', () => console.log('Portfolio API listening on 127.0.0.1:' + port));
+const host = env.HOST || '127.0.0.1';
+app.listen(port, host, () => console.log('Portfolio API listening on ' + host + ':' + port));
