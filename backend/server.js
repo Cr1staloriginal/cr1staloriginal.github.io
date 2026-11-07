@@ -10,7 +10,7 @@ app.use(express.json({ limit: '32kb', strict: true }));
 
 const env = process.env;
 const required = ['APP_ORIGIN', 'GITHUB_CLIENT_ID', 'GITHUB_CLIENT_SECRET', 'GITHUB_CALLBACK_URL',
-  'ADMIN_GITHUB_LOGIN', 'SESSION_SECRET', 'GITHUB_REPOSITORY'];
+  'ADMIN_GITHUB_LOGIN', 'SESSION_SECRET', 'GITHUB_REPOSITORY', 'GITHUB_APP_ID', 'GITHUB_APP_PRIVATE_KEY'];
 const missing = required.filter((key) => !env[key]);
 if (missing.length) {
   console.error('Missing required environment variables:', missing.join(', '));
@@ -138,6 +138,41 @@ function validateContent(file, content) {
   }
   return JSON.stringify(data, null, 2) + '\n';
 }
+function createAppJwt() {
+  const now = Math.floor(Date.now() / 1000);
+  const header = Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({ iat: now - 30, exp: now + 540, iss: env.GITHUB_APP_ID })).toString('base64url');
+  const unsigned = header + '.' + payload;
+  const privateKey = env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, '\n');
+  const signature = crypto.sign('RSA-SHA256', Buffer.from(unsigned), privateKey).toString('base64url');
+  return unsigned + '.' + signature;
+}
+async function getScopedInstallationToken(userToken) {
+  const installationsResponse = await fetch('https://api.github.com/user/installations?per_page=100', {
+    headers: { Authorization: 'Bearer ' + userToken, Accept: 'application/vnd.github+json' }
+  });
+  const installationsData = await installationsResponse.json();
+  if (!installationsResponse.ok) throw new Error('Could not list GitHub App installations.');
+  const appJwt = createAppJwt();
+  for (const installation of installationsData.installations || []) {
+    if (installation.account?.login !== env.ADMIN_GITHUB_LOGIN) continue;
+    const reposResponse = await fetch('https://api.github.com/user/installations/' + installation.id + '/repositories?per_page=100', {
+      headers: { Authorization: 'Bearer ' + userToken, Accept: 'application/vnd.github+json' }
+    });
+    const reposData = await reposResponse.json();
+    if (!reposResponse.ok) continue;
+    if (!(reposData.repositories || []).some((repo) => repo.full_name.toLowerCase() === REPO.toLowerCase())) continue;
+    const tokenResponse = await fetch('https://api.github.com/app/installations/' + installation.id + '/access_tokens', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + appJwt, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repositories: [REPO.split('/')[1]], permissions: { contents: 'write', pull_requests: 'write' } })
+    });
+    const tokenData = await tokenResponse.json();
+    if (!tokenResponse.ok || !tokenData.token) throw new Error('Could not create a repository-scoped installation token.');
+    return { token: tokenData.token, expiresAt: new Date(tokenData.expires_at).getTime() };
+  }
+  throw new Error('Install the GitHub App on the configured portfolio repository first.');
+}
 function githubError(res, error) {
   const status = Number.isInteger(error.status) && error.status >= 400 && error.status < 500 ? error.status : 502;
   res.status(status).json({ error: status === 502 ? 'External service unavailable' : error.message });
@@ -151,7 +186,7 @@ app.get('/api/auth/github', rateLimit({ max: 10 }), (_req, res) => {
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', env.GITHUB_CLIENT_ID);
   url.searchParams.set('redirect_uri', env.GITHUB_CALLBACK_URL);
-  url.searchParams.set('scope', 'public_repo');
+  url.searchParams.set('scope', 'read:user');
   url.searchParams.set('state', state);
   res.redirect(url.toString());
 });
@@ -176,8 +211,10 @@ app.get('/api/auth/callback', rateLimit({ max: 20 }), async (req, res) => {
     });
     const user = await userResponse.json();
     if (!userResponse.ok || user.login !== env.ADMIN_GITHUB_LOGIN) return res.status(403).send('This GitHub account is not allowed.');
-    const value = encryptSession({ login: user.login, token: tokenData.access_token, expiresAt: Date.now() + 3_600_000 });
-    setCookie(res, SESSION_COOKIE, value, { maxAge: 3600, sameSite: COOKIE_SECURE ? 'None' : 'Lax' });
+    const installation = await getScopedInstallationToken(tokenData.access_token);
+    const maxAge = Math.max(60, Math.floor((installation.expiresAt - Date.now()) / 1000));
+    const value = encryptSession({ login: user.login, token: installation.token, expiresAt: installation.expiresAt });
+    setCookie(res, SESSION_COOKIE, value, { maxAge, sameSite: COOKIE_SECURE ? 'None' : 'Lax' });
     res.redirect(APP_ORIGIN + '/admin/');
   } catch (error) {
     console.error('OAuth callback failed:', error.message);
@@ -210,7 +247,7 @@ app.post('/api/admin/content', requireAdmin, rateLimit({ max: 12 }), async (req,
     const base = await github('/repos/' + REPO + '/git/ref/heads/' + encodeURIComponent(BASE_BRANCH), {
       headers: { Authorization: 'Bearer ' + token }
     });
-    const branch = 'cms/content-' + Date.now().toString(36);
+    const branch = 'cms/content-' + Date.now().toString(36) + '-' + crypto.randomBytes(3).toString('hex');
     await github('/repos/' + REPO + '/git/refs', {
       method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ ref: 'refs/heads/' + branch, sha: base.object.sha })
