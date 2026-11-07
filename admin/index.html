@@ -4,50 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#080a12">
-  <meta name="portfolio-api" content="">
-  <meta name="description" content="Закрытая панель управления портфолио Cr1stalik.">
+  <meta name="description" content="Управление публичными данными портфолио Cr1stalik через GitHub Actions.">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="admin.css">
-  <title>Админ-панель | Cr1stalik</title>
+  <title>CMS | Cr1stalik</title>
 </head>
 <body>
   <main class="admin-shell">
     <a class="admin-back" href="../index.html">← Вернуться на сайт</a>
     <header class="admin-heading">
-      <div class="section-kicker">CR1STALIK / PRIVATE CMS</div>
+      <div class="section-kicker">CR1STALIK / GITHUB CMS</div>
       <h1>Управление <span class="gradient-text">портфолио</span></h1>
-      <p>Изменения проходят через GitHub Pull Request и не публикуются без проверки.</p>
+      <p>CMS работает без VPS и отдельного backend. Данные публикуются через GitHub Actions и Pull Request.</p>
     </header>
 
-    <section class="admin-panel" id="login-panel">
-      <h2>Вход администратора</h2>
-      <p>Авторизация только через разрешённый GitHub-аккаунт.</p>
-      <button class="btn primary" id="login-button" type="button">Войти через GitHub ↗</button>
-      <p class="admin-feedback" id="login-feedback" role="status"></p>
+    <section class="admin-panel" id="login-panel" hidden>
+      <h2>GitHub</h2>
+      <p>Для запуска CMS нужен доступ к репозиторию.</p>
+      <button class="btn primary" id="login-button" type="button">Открыть GitHub ↗</button>
     </section>
 
     <section class="admin-panel" id="editor-panel" hidden>
       <div class="admin-toolbar">
-        <div><span class="admin-label">СЕССИЯ</span><strong id="admin-login"></strong></div>
-        <button class="admin-button" id="logout-button" type="button">Выйти</button>
+        <div><span class="admin-label">РЕЖИМ</span><strong id="admin-login">GitHub Actions</strong></div>
+        <button class="admin-button" id="logout-button" type="button">О доступе</button>
       </div>
-      <label class="admin-label" for="file-select">Файл данных</label>
+      <label class="admin-label" for="file-select">Раздел портфолио</label>
       <select id="file-select">
-        <option value="data/site-data.json">Текущий статус</option>
+        <option value="data/site-data.json">Текущий статус и проекты</option>
         <option value="data/changelog.json">История обновлений</option>
         <option value="data/achievements.json">Достижения</option>
       </select>
       <div class="admin-editor-heading">
         <label class="admin-label" for="json-editor">JSON-содержимое</label>
-        <button class="admin-button" id="reload-button" type="button">Загрузить актуальное</button>
+        <button class="admin-button" id="reload-button" type="button">Загрузить из GitHub</button>
       </div>
       <textarea id="json-editor" spellcheck="false" rows="18" aria-label="JSON-содержимое"></textarea>
       <div class="admin-actions">
-        <button class="btn primary" id="save-button" type="button">Создать Pull Request</button>
+        <button class="btn primary" id="save-button" type="button">Проверить и подготовить PR</button>
         <span class="admin-feedback" id="editor-feedback" role="status"></span>
       </div>
-      <p class="admin-note">Сохранение создаёт отдельную ветку и PR. Сайт обновится только после проверки и слияния PR с main.</p>
+      <p class="admin-note">После проверки JSON будет скопирован. В открывшемся GitHub Actions выбери файл, вставь содержимое в поле content и нажми Run workflow. Запуск разрешён только аккаунту Cr1staloriginal. Workflow создаст Pull Request; сайт обновится после его проверки и слияния с main.</p>
       <p id="pr-result" class="admin-pr-result" hidden></p>
     </section>
   </main>
