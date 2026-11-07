@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cr1stalik — разработчик с декабря 2024 года. Python, Discord- и Telegram-боты, веб-разработка и собственные проекты."><meta name="theme-color" content="#07070a"><meta property="og:title" content="Cr1stalik | Developer Portfolio"><meta property="og:description" content="Создаю собственные проекты, изучаю технологии и развиваюсь в Python, ботах и веб-разработке."><meta property="og:type" content="website"><meta property="og:image" content="https://cr1staloriginal.github.io/avatar.png">
+    <meta name="description" content="Cr1stalik — разработчик с декабря 2024 года. Python, Discord- и Telegram-боты, веб-разработка и собственные проекты."><meta name="theme-color" content="#07070a"><meta name="portfolio-api" content=""><meta property="og:title" content="Cr1stalik | Developer Portfolio"><meta property="og:description" content="Создаю собственные проекты, изучаю технологии и развиваюсь в Python, ботах и веб-разработке."><meta property="og:type" content="website"><meta property="og:image" content="https://cr1staloriginal.github.io/avatar.png">
     <title>Cr1stalik | Developer Portfolio</title>
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -220,10 +220,12 @@
     <div class="contact-form-wrap">
         <div class="section-kicker">SEND A MESSAGE</div>
         <h3>Есть идея или предложение?</h3>
-        <p class="contact-form-note">Заполни форму — сайт подготовит сообщение и откроет Telegram. Оно не отправляется автоматически: перед отправкой ты сможешь проверить и изменить текст в Telegram.</p>
+        <p class="contact-form-note">Заполни форму. После подключения серверной части сообщение будет доставлено в Telegram; пока backend не настроен, сайт подготовит черновик, который можно проверить и отправить вручную.</p>
         <form id="contact-form" class="contact-message-form">
             <label for="contact-name">Как к тебе обращаться?</label>
             <input id="contact-name" name="name" type="text" maxlength="60" autocomplete="name" placeholder="Твоё имя или ник" required>
+            <label for="contact-contact">Как с тобой связаться?</label>
+            <input id="contact-contact" name="contact" type="text" maxlength="160" autocomplete="email" placeholder="@username, Telegram или Discord" required>
             <label for="contact-topic">Тема обращения</label>
             <select id="contact-topic" name="topic">
                 <option value="Предложение о сотрудничестве">Сотрудничество</option>
@@ -233,7 +235,7 @@
             </select>
             <label for="contact-message">Сообщение</label>
             <textarea id="contact-message" name="message" rows="4" maxlength="1500" placeholder="Расскажи, что ты предлагаешь или хочешь обсудить…" required></textarea>
-            <button class="btn primary" type="submit">Подготовить сообщение в Telegram ↗</button>
+            <button class="btn primary" type="submit">Отправить сообщение ↗</button>
             <p class="contact-form-feedback" id="contact-form-feedback" role="status" aria-live="polite"></p>
         </form>
     </div>
