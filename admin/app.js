@@ -1,99 +1,92 @@
 (() => {
-  const apiSetting = (document.querySelector('meta[name="portfolio-api"]')?.content || '').trim();
-  const apiBase = apiSetting === 'same-origin' ? '' : apiSetting.replace(/\/$/, '');
-  const api = (path) => apiBase + path;
+  const owner = 'Cr1staloriginal';
+  const repository = 'cr1staloriginal.github.io';
+  const workflowUrl = `https://github.com/${owner}/${repository}/actions/workflows/portfolio-cms.yml`;
   const loginPanel = document.getElementById('login-panel');
   const editorPanel = document.getElementById('editor-panel');
-  const loginFeedback = document.getElementById('login-feedback');
-  const editorFeedback = document.getElementById('editor-feedback');
   const fileSelect = document.getElementById('file-select');
   const editor = document.getElementById('json-editor');
-  const saveButton = document.getElementById('save-button');
+  const feedback = document.getElementById('editor-feedback');
   const prResult = document.getElementById('pr-result');
+  const loadButton = document.getElementById('reload-button');
+  const prepareButton = document.getElementById('save-button');
 
-  async function request(path, options = {}) {
-    const response = await fetch(api(path), {
-      credentials: 'include',
-      ...options,
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || 'Ошибка API: ' + response.status);
-    return data;
+  function message(text, kind = '') {
+    feedback.textContent = text;
+    feedback.className = 'admin-feedback ' + kind;
   }
-  function feedback(element, message, kind = '') {
-    element.textContent = message;
-    element.className = 'admin-feedback ' + kind;
-  }
-  async function checkSession() {
-    try {
-      await request('/api/health');
-    } catch {
-      loginPanel.hidden = false;
-      editorPanel.hidden = true;
-      document.getElementById('login-button').disabled = true;
-      feedback(loginFeedback, 'Backend ещё не подключён. После настройки API админ-панель станет доступна.');
-      return;
-    }
-    try {
-      const data = await request('/api/auth/me');
-      loginPanel.hidden = true;
-      editorPanel.hidden = false;
-      document.getElementById('admin-login').textContent = data.login;
-      await loadContent();
-    } catch {
-      loginPanel.hidden = false;
-      editorPanel.hidden = true;
-      document.getElementById('login-button').disabled = false;
-      feedback(loginFeedback, 'Войди через разрешённый GitHub-аккаунт.');
-    }
-  }
+
   async function loadContent() {
-    feedback(editorFeedback, 'Загружаю данные…');
+    message('Загружаю актуальную версию из GitHub…');
     prResult.hidden = true;
     try {
-      const data = await request('/api/admin/content?file=' + encodeURIComponent(fileSelect.value));
-      editor.value = data.content;
-      feedback(editorFeedback, 'Данные загружены.');
+      const response = await fetch(`../${fileSelect.value}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('GitHub Pages пока не отдал файл (' + response.status + ').');
+      const data = await response.json();
+      editor.value = JSON.stringify(data, null, 2);
+      message('Данные загружены. После публикации PR обнови страницу, чтобы увидеть новую версию.', 'admin-success');
     } catch (error) {
-      feedback(editorFeedback, error.message, 'admin-error');
+      message(error.message, 'admin-error');
     }
   }
 
-  document.getElementById('login-button').addEventListener('click', () => {
-    loginFeedback.textContent = 'Переход к GitHub…';
-    window.location.assign(api('/api/auth/github'));
-  });
-  document.getElementById('logout-button').addEventListener('click', async () => {
-    try { await request('/api/auth/logout', { method: 'POST', body: '{}' }); }
-    finally { window.location.reload(); }
-  });
-  document.getElementById('reload-button').addEventListener('click', loadContent);
+  function validateContent() {
+    const value = JSON.parse(editor.value);
+    if (fileSelect.value === 'data/site-data.json') {
+      if (!value || Array.isArray(value) || typeof value !== 'object' ||
+          !value.status || typeof value.status !== 'object' ||
+          typeof value.status.label !== 'string' ||
+          typeof value.status.state !== 'string' ||
+          typeof value.status.description !== 'string' ||
+          !Array.isArray(value.focus)) {
+        throw new Error('Проверь структуру: status должен содержать label, state, description, а focus должен быть массивом.');
+      }
+    } else if (!Array.isArray(value)) {
+      throw new Error('Для этого файла нужен JSON-массив.');
+    }
+    const normalized = JSON.stringify(value, null, 2);
+    if (new Blob([normalized]).size > 24000) throw new Error('Размер JSON не должен превышать 24 КБ.');
+    return normalized;
+  }
+
+  loadButton.addEventListener('click', loadContent);
   fileSelect.addEventListener('change', loadContent);
-  saveButton.addEventListener('click', async () => {
-    saveButton.disabled = true;
-    feedback(editorFeedback, 'Проверяю JSON и создаю Pull Request…');
+
+  prepareButton.addEventListener('click', async () => {
+    prepareButton.disabled = true;
     prResult.hidden = true;
     try {
-      JSON.parse(editor.value);
-      const result = await request('/api/admin/content', {
-        method: 'POST',
-        body: JSON.stringify({ file: fileSelect.value, content: editor.value })
-      });
-      feedback(editorFeedback, 'Pull Request создан.', 'admin-success');
+      const normalized = validateContent();
+      editor.value = normalized;
+      await navigator.clipboard.writeText(normalized);
+      message('JSON проверен и скопирован. Сейчас откроется GitHub Actions — запусти workflow и вставь содержимое в поле content.', 'admin-success);
       const link = document.createElement('a');
-      link.href = result.pullRequest;
+      link.href = workflowUrl;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.textContent = 'Открыть PR #' + result.number + ' ↗';
+      link.textContent = 'Открыть Portfolio CMS в GitHub Actions ↗';
       prResult.replaceChildren(link);
       prResult.hidden = false;
+      window.open(workflowUrl, '_blank', 'noopener');
     } catch (error) {
-      feedback(editorFeedback, error.message, 'admin-error');
+      message(error.name === 'NotAllowedError'
+        ? 'Браузер запретил копирование. Разреши доступ к буферу обмена или скопируй JSON вручную.'
+        : error instanceof SyntaxError ? 'JSON содержит ошибку синтаксиса: ' + error.message : error.message,
+        'admin-error');
     } finally {
-      saveButton.disabled = false;
+      prepareButton.disabled = false;
     }
   });
 
-  checkSession();
+  document.getElementById('login-button').addEventListener('click', () => {
+    window.open('https://github.com/login', '_blank', 'noopener');
+  });
+  document.getElementById('logout-button').addEventListener('click', () => {
+    message('Отдельной CMS-сессии нет: доступ проверяет сам GitHub при запуске workflow.');
+  });
+
+  loginPanel.hidden = true;
+  editorPanel.hidden = false;
+  document.getElementById('admin-login').textContent = 'GitHub Actions · доступ только владельцу репозитория';
+  loadContent();
 })();
