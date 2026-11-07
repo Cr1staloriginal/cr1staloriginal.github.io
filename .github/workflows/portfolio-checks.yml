@@ -25,9 +25,24 @@ jobs:
           node --check case-study.js
           node --check admin/app.js
           node --check backend/server.js
-      - name: Validate public JSON data
+      - name: Validate public JSON data and schemas
         run: |
-          node -e "for (const file of ['data/site-data.json','data/changelog.json','data/achievements.json']) { JSON.parse(require('fs').readFileSync(file, 'utf8')); console.log('Valid:', file); }"
+          node <<'NODE'
+          const fs = require('node:fs');
+          const read = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+          const site = read('data/site-data.json');
+          if (!site || typeof site.status !== 'object' ||
+              typeof site.status.label !== 'string' ||
+              typeof site.status.state !== 'string' ||
+              typeof site.status.description !== 'string' ||
+              !Array.isArray(site.focus)) {
+            throw new Error('data/site-data.json schema is invalid');
+          }
+          for (const file of ['data/changelog.json', 'data/achievements.json']) {
+            if (!Array.isArray(read(file))) throw new Error(file + ' must be a JSON array');
+          }
+          console.log('Public JSON data and schemas are valid.');
+          NODE
       - name: Validate HTML, local assets and anchors
         run: python scripts/validate_portfolio.py
       - name: Check required pages and assets
@@ -42,5 +57,6 @@ jobs:
           test -f case-study.css
           test -f updates.css
           test -f admin/index.html
+          test -f .github/workflows/portfolio-cms.yml
           test -f backend/server.js
           test -f backend/package.json
