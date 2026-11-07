@@ -139,7 +139,7 @@ const year=document.getElementById('year');if(year)year.textContent=String(new D
   if(status){
    const indicator=document.createElement('span');indicator.className='now-indicator';
    const content=document.createElement('div');
-   const title=document.createElement('strong');title.textContent=data.status?.label||'Статус не указан';
+   const title=document.createElement('strong');title.textContent=(data.status?.label||'Статус не указан')+(data.status?.state?' · '+data.status.state:'');
    const description=document.createElement('p');description.textContent=data.status?.description||'';
    content.append(title,description);status.replaceChildren(indicator,content);
   }
