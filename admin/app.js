@@ -26,14 +26,19 @@
   }
   async function checkSession() {
     try {
+      await request('/api/health');
+      document.getElementById('login-button').disabled = false;
       const data = await request('/api/auth/me');
       loginPanel.hidden = true;
       editorPanel.hidden = false;
       document.getElementById('admin-login').textContent = data.login;
       await loadContent();
-    } catch {
+    } catch (error) {
       loginPanel.hidden = false;
       editorPanel.hidden = true;
+      const button = document.getElementById('login-button');
+      button.disabled = true;
+      feedback(loginFeedback, 'Backend ещё не подключён. После настройки API админ-панель станет доступна.');
     }
   }
   async function loadContent() {
