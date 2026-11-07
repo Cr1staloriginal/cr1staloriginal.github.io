@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-11-07",
+  "status": {
+    "label": "Развиваю Cr1stalik Portfolio 3.0",
+    "state": "В работе",
+    "description": "Обновляю портфолио: оформляю кейсы проектов, расширяю GitHub-раздел и улучшаю структуру сайта."
+  },
+  "focus": [
+    {
+      "name": "Cr1stalik Portfolio 3.0",
+      "kind": "Личный проект",
+      "state": "В работе",
+      "url": "https://github.com/Cr1staloriginal/cr1staloriginal.github.io"
+    },
+    {
+      "name": "Phoenix RP",
+      "kind": "Android · Kotlin",
+      "state": "В разработке",
+      "url": "https://github.com/Cr1staloriginal/Phoenix-_RP"
+    },
+    {
+      "name": "Paw Art Studio",
+      "kind": "Клиентский проект",
+      "state": "Поддержка и развитие",
+      "url": "https://pawartstudio.store"
+    }
+  ],
+  "links": {
+    "github": "https://github.com/Cr1staloriginal",
+    "telegram": "https://t.me/cr1staloriginal",
+    "discord": "https://discord.com/users/1097906739552206938"
+  }
+}
