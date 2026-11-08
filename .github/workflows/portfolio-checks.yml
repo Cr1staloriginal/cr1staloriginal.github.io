@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: portfolio-checks-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -38,12 +42,21 @@ jobs:
               !Array.isArray(site.focus)) {
             throw new Error('data/site-data.json schema is invalid');
           }
+          for (const item of site.focus) {
+            if (!item || typeof item.name !== 'string' ||
+                typeof item.kind !== 'string' || typeof item.state !== 'string') {
+              throw new Error('data/site-data.json contains an invalid focus item');
+            }
+          }
           for (const file of ['data/changelog.json', 'data/achievements.json']) {
-            if (!Array.isArray(read(file))) throw new Error(file + ' must be a JSON array');
+            const data = read(file);
+            if (!Array.isArray(data) || data.length > 200) {
+              throw new Error(file + ' must be an array with at most 200 records');
+            }
           }
           console.log('Public JSON data and schemas are valid.');
           NODE
-      - name: Validate HTML, local assets and anchors
+      - name: Validate HTML, local assets, anchors and SEO files
         run: python scripts/validate_portfolio.py
       - name: Check required pages and assets
         run: |
@@ -54,9 +67,10 @@ jobs:
           test -f phoenix-rp.html
           test -f songid.html
           test -f updates.html
+          test -f 404.html
+          test -f sitemap.xml
+          test -f robots.txt
           test -f case-study.css
           test -f updates.css
           test -f admin/index.html
           test -f .github/workflows/portfolio-cms.yml
-          test -f backend/server.js
-          test -f backend/package.json
