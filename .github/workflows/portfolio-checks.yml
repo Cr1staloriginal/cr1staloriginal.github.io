@@ -27,7 +27,6 @@ jobs:
           node --check script.js
           node --check updates.js
           node --check case-study.js
-          node --check admin/app.js
           node --check backend/server.js
       - name: Validate public JSON data and schemas
         run: |
@@ -72,5 +71,3 @@ jobs:
           test -f robots.txt
           test -f case-study.css
           test -f updates.css
-          test -f admin/index.html
-          test -f .github/workflows/portfolio-cms.yml
