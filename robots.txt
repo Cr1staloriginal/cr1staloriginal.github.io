@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
 
 Sitemap: https://cr1staloriginal.github.io/sitemap.xml
